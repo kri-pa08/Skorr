@@ -1,0 +1,867 @@
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080C0A;
+  --bg2:#0D1410;
+  --bg3:#111A13;
+  --gold:#C9A84C;
+  --gold2:#E8C96A;
+  --green:#1A6B3A;
+  --green2:#22873F;
+  --green3:#2EAD54;
+  --text:#F0EDE6;
+  --text2:#A8A49A;
+  --text3:#5C5A54;
+  --border:#1E2820;
+  --border2:#263028;
+  --red:#C94C4C;
+  --font-head:'Syne',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* Custom cursor */
+.cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transition:transform 0.1s;transform:translate(-50%,-50%)}
+.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(201,168,76,0.4);border-radius:50%;pointer-events:none;z-index:9998;transition:transform 0.15s,width 0.2s,height 0.2s,opacity 0.2s;transform:translate(-50%,-50%)}
+
+/* Grain overlay */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1;opacity:0.35;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:24px 48px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid transparent;
+  transition:background 0.4s,border-color 0.4s,padding 0.3s;
+}
+nav.scrolled{background:rgba(8,12,10,0.92);border-color:var(--border);backdrop-filter:blur(12px);padding:16px 48px}
+.nav-logo{font-family:var(--font-head);font-size:22px;font-weight:800;letter-spacing:-0.5px;color:var(--text)}
+.nav-logo span{color:var(--gold)}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:14px;font-weight:400;letter-spacing:0.02em;transition:color 0.2s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{
+  background:var(--gold);color:#080C0A;
+  padding:10px 22px;border-radius:6px;
+  font-size:14px;font-weight:600;text-decoration:none;
+  font-family:var(--font-head);letter-spacing:0.02em;
+  transition:background 0.2s,transform 0.2s;
+}
+.nav-cta:hover{background:var(--gold2);transform:translateY(-1px)}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:120px 48px 80px;
+  position:relative;overflow:hidden;text-align:center;
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 60%, rgba(26,107,58,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 20% 20%, rgba(201,168,76,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 30% 20% at 80% 80%, rgba(201,168,76,0.03) 0%, transparent 50%);
+}
+.hero-grid{
+  position:absolute;inset:0;z-index:0;
+  background-image:
+    linear-gradient(rgba(30,40,32,0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30,40,32,0.3) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 80%);
+}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);
+  padding:6px 14px;border-radius:100px;
+  font-size:12px;font-weight:500;color:var(--gold);letter-spacing:0.06em;
+  text-transform:uppercase;margin-bottom:32px;
+  position:relative;z-index:2;
+  opacity:0;animation:fadeUp 0.8s 0.2s forwards;
+}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+
+.hero-title{
+  font-family:var(--font-head);
+  font-size:clamp(42px,7vw,88px);
+  font-weight:800;
+  line-height:1.0;
+  letter-spacing:-2px;
+  position:relative;z-index:2;
+  margin-bottom:24px;
+}
+.hero-title .line{display:block;overflow:hidden}
+.hero-title .line span{
+  display:block;
+  opacity:0;transform:translateY(100%);
+  animation:slideUp 0.9s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.hero-title .line:nth-child(1) span{animation-delay:0.4s}
+.hero-title .line:nth-child(2) span{animation-delay:0.55s}
+.hero-title .line:nth-child(3) span{animation-delay:0.7s}
+.hero-title .gold{color:var(--gold)}
+.hero-title .outline{
+  -webkit-text-stroke:1px rgba(240,237,230,0.3);
+  color:transparent;
+}
+
+@keyframes slideUp{to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+.hero-sub{
+  font-size:clamp(15px,2vw,18px);color:var(--text2);
+  max-width:520px;line-height:1.7;margin:0 auto 48px;
+  position:relative;z-index:2;font-weight:300;
+  opacity:0;animation:fadeUp 0.8s 0.9s forwards;transform:translateY(16px);
+}
+.hero-actions{
+  display:flex;gap:16px;align-items:center;justify-content:center;
+  position:relative;z-index:2;flex-wrap:wrap;
+  opacity:0;animation:fadeUp 0.8s 1.1s forwards;transform:translateY(16px);
+}
+.btn-primary{
+  background:var(--gold);color:#080C0A;
+  padding:14px 32px;border-radius:8px;
+  font-size:15px;font-weight:700;text-decoration:none;
+  font-family:var(--font-head);letter-spacing:0.01em;
+  transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;
+  box-shadow:0 0 0 0 rgba(201,168,76,0.4);
+}
+.btn-primary:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,0.25)}
+.btn-secondary{
+  color:var(--text2);padding:14px 24px;border-radius:8px;
+  font-size:15px;font-weight:400;text-decoration:none;
+  border:1px solid var(--border2);
+  transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-secondary:hover{color:var(--text);border-color:var(--text3)}
+
+/* FLOATING CARDS */
+.hero-cards{
+  position:relative;z-index:2;margin-top:64px;
+  width:100%;max-width:900px;
+  opacity:0;animation:fadeUp 1s 1.3s forwards;transform:translateY(24px);
+}
+.cards-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.float-card{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:12px;padding:16px 20px;
+  min-width:200px;flex:1;max-width:260px;
+  position:relative;overflow:hidden;
+}
+.float-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(201,168,76,0.03),transparent);
+}
+.fc-label{font-size:11px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px}
+.fc-value{font-family:var(--font-head);font-size:28px;font-weight:700;line-height:1;margin-bottom:4px}
+.fc-value.green{color:var(--green3)}
+.fc-value.gold{color:var(--gold)}
+.fc-value.red{color:var(--red)}
+.fc-sub{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:4px}
+.fc-sub .up{color:var(--green3)}
+.fc-sub .down{color:var(--red)}
+.fc-bar{height:3px;background:var(--border);border-radius:2px;margin-top:12px;overflow:hidden}
+.fc-bar-fill{height:100%;border-radius:2px;animation:barGrow 1.5s 2s both}
+@keyframes barGrow{from{width:0}}
+.fc-bar-fill.green{background:var(--green3);width:72%}
+.fc-bar-fill.gold{background:var(--gold);width:88%}
+.fc-bar-fill.red{background:var(--red);width:31%}
+
+.alert-card{
+  background:var(--bg2);border:1px solid rgba(201,168,76,0.25);
+  border-radius:12px;padding:14px 18px;
+  display:flex;align-items:flex-start;gap:12px;
+  max-width:360px;margin:16px auto 0;
+  animation:alertPop 0.5s 2.5s both;
+}
+@keyframes alertPop{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+.alert-icon{width:32px;height:32px;background:rgba(201,168,76,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.alert-title{font-size:13px;font-weight:500;color:var(--gold);margin-bottom:2px}
+.alert-body{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* STATS STRIP */
+.stats{
+  padding:40px 48px;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  display:flex;justify-content:center;gap:0;
+  background:var(--bg2);
+}
+.stat-item{
+  text-align:center;padding:0 48px;
+  border-right:1px solid var(--border);
+}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:var(--font-head);font-size:36px;font-weight:800;color:var(--gold);line-height:1}
+.stat-label{font-size:13px;color:var(--text3);margin-top:6px;font-weight:300}
+
+/* SECTION */
+section{padding:100px 48px;max-width:1200px;margin:0 auto}
+.section-eyebrow{
+  font-size:11px;font-weight:500;color:var(--gold);letter-spacing:0.1em;
+  text-transform:uppercase;margin-bottom:16px;
+}
+.section-title{
+  font-family:var(--font-head);font-size:clamp(28px,4vw,48px);
+  font-weight:800;letter-spacing:-1px;line-height:1.1;margin-bottom:20px;
+}
+.section-sub{font-size:16px;color:var(--text2);line-height:1.7;max-width:500px;font-weight:300}
+
+/* FEATURES */
+.features-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:2px;margin-top:64px;border:1px solid var(--border);border-radius:16px;overflow:hidden;
+}
+.feature-card{
+  background:var(--bg2);padding:36px 32px;
+  border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+  transition:background 0.3s;cursor:pointer;position:relative;overflow:hidden;
+}
+.feature-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(201,168,76,0.04),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.feature-card:hover{background:var(--bg3)}
+.feature-card:hover::after{opacity:1}
+.feature-card:last-child{border-right:none}
+.fc-icon{
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:20px;
+}
+.fc-icon.g{background:rgba(26,107,58,0.15)}
+.fc-icon.a{background:rgba(201,168,76,0.1)}
+.fc-icon.r{background:rgba(201,76,76,0.1)}
+.feature-name{font-family:var(--font-head);font-size:18px;font-weight:700;margin-bottom:10px;letter-spacing:-0.3px}
+.feature-desc{font-size:14px;color:var(--text2);line-height:1.65;font-weight:300}
+.feature-tag{
+  display:inline-block;margin-top:16px;
+  font-size:11px;font-weight:500;color:var(--green3);
+  background:rgba(46,173,84,0.08);padding:3px 10px;border-radius:100px;
+  letter-spacing:0.04em;
+}
+.feature-tag.gold{color:var(--gold);background:rgba(201,168,76,0.08)}
+
+/* HOW IT WORKS */
+.how-section{padding:100px 48px;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.how-inner{max-width:1100px;margin:0 auto}
+.steps-list{margin-top:64px;display:flex;flex-direction:column;gap:0}
+.step-row{
+  display:grid;grid-template-columns:60px 1fr 1fr;
+  gap:32px;align-items:center;
+  padding:32px 0;border-bottom:1px solid var(--border);
+}
+.step-row:last-child{border-bottom:none}
+.step-n{
+  font-family:var(--font-head);font-size:48px;font-weight:800;
+  color:var(--border2);line-height:1;
+}
+.step-text-title{font-family:var(--font-head);font-size:20px;font-weight:700;margin-bottom:8px;letter-spacing:-0.3px}
+.step-text-desc{font-size:14px;color:var(--text2);line-height:1.65;font-weight:300}
+.step-visual{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:10px;padding:16px;font-size:12px;font-family:monospace;
+  color:var(--text3);line-height:1.8;
+}
+.step-visual .hi{color:var(--green3)}
+.step-visual .go{color:var(--gold)}
+.step-visual .re{color:var(--red)}
+
+/* SUPPLIER SCORE */
+.score-section{padding:100px 48px;max-width:1200px;margin:0 auto}
+.score-demo{
+  margin-top:64px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:16px;padding:40px;
+}
+.score-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}
+.score-title{font-family:var(--font-head);font-size:16px;font-weight:600}
+.score-subtitle{font-size:13px;color:var(--text3);margin-top:2px}
+.supplier-row{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 0;border-bottom:1px solid var(--border);
+}
+.supplier-row:last-child{border-bottom:none}
+.sup-rank{font-family:var(--font-head);font-size:13px;font-weight:600;color:var(--text3);min-width:24px}
+.sup-name{flex:1;font-size:14px;font-weight:500}
+.sup-detail{font-size:12px;color:var(--text3);margin-top:2px}
+.sup-bar-wrap{flex:2;display:flex;align-items:center;gap:12px}
+.sup-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.sup-bar-inner{height:100%;border-radius:3px;transition:width 1.5s cubic-bezier(0.16,1,0.3,1)}
+.sup-score{font-family:var(--font-head);font-size:16px;font-weight:700;min-width:40px;text-align:right}
+.sup-badge{font-size:10px;padding:2px 8px;border-radius:100px;font-weight:500;white-space:nowrap}
+.sup-badge.best{background:rgba(46,173,84,0.1);color:var(--green3)}
+.sup-badge.warn{background:rgba(201,76,76,0.1);color:var(--red)}
+.sup-badge.ok{background:rgba(201,168,76,0.1);color:var(--gold)}
+
+/* PRICING */
+.pricing-section{
+  padding:100px 48px;background:var(--bg2);
+  border-top:1px solid var(--border);
+}
+.pricing-inner{max-width:900px;margin:0 auto}
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:56px}
+.price-card{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:16px;padding:36px;position:relative;overflow:hidden;
+}
+.price-card.featured{border-color:var(--gold);background:var(--bg3)}
+.price-card.featured::before{
+  content:'Most Popular';position:absolute;top:20px;right:20px;
+  background:var(--gold);color:#080C0A;
+  font-size:10px;font-weight:700;padding:3px 10px;border-radius:100px;
+  font-family:var(--font-head);letter-spacing:0.04em;
+}
+.price-name{font-size:13px;font-weight:500;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px}
+.price-amount{font-family:var(--font-head);font-size:42px;font-weight:800;letter-spacing:-1px;line-height:1}
+.price-amount span{font-size:16px;font-weight:400;color:var(--text3)}
+.price-period{font-size:13px;color:var(--text3);margin-top:4px}
+.price-divider{height:1px;background:var(--border);margin:24px 0}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:12px}
+.price-features li{font-size:14px;color:var(--text2);display:flex;gap:10px;align-items:flex-start;font-weight:300}
+.price-features li::before{content:'✓';color:var(--green3);font-size:13px;font-weight:600;flex-shrink:0;margin-top:1px}
+.price-btn{
+  display:block;text-align:center;margin-top:28px;
+  padding:13px;border-radius:8px;font-size:14px;font-weight:600;
+  font-family:var(--font-head);text-decoration:none;transition:all 0.2s;
+}
+.price-btn.outline{border:1px solid var(--border2);color:var(--text2)}
+.price-btn.outline:hover{border-color:var(--text3);color:var(--text)}
+.price-btn.solid{background:var(--gold);color:#080C0A}
+.price-btn.solid:hover{background:var(--gold2)}
+
+/* CTA SECTION */
+.cta-section{
+  padding:120px 48px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 50% 50%, rgba(26,107,58,0.1) 0%, transparent 70%);
+}
+.cta-title{
+  font-family:var(--font-head);font-size:clamp(32px,5vw,64px);
+  font-weight:800;letter-spacing:-1.5px;line-height:1.05;
+  max-width:700px;margin:0 auto 24px;
+  position:relative;z-index:1;
+}
+.cta-sub{font-size:16px;color:var(--text2);max-width:420px;margin:0 auto 40px;line-height:1.7;font-weight:300;position:relative;z-index:1}
+.cta-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+
+/* FOOTER */
+footer{
+  padding:40px 48px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg);flex-wrap:wrap;gap:16px;
+}
+.footer-logo{font-family:var(--font-head);font-size:18px;font-weight:800;color:var(--text)}
+.footer-logo span{color:var(--gold)}
+.footer-copy{font-size:13px;color:var(--text3)}
+.footer-links{display:flex;gap:24px}
+.footer-links a{font-size:13px;color:var(--text3);text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:var(--text2)}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.8s cubic-bezier(0.16,1,0.3,1),transform 0.8s cubic-bezier(0.16,1,0.3,1)}
+.reveal.visible{opacity:1;transform:none}
+
+/* WA NOTIFICATION FLOAT */
+.wa-float{
+  position:fixed;bottom:32px;right:32px;z-index:50;
+  background:#1A2E1C;border:1px solid #2A4A2E;
+  border-radius:12px;padding:14px 18px;max-width:280px;
+  display:flex;gap:12px;align-items:flex-start;
+  transform:translateX(320px);transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  box-shadow:0 16px 40px rgba(0,0,0,0.4);
+}
+.wa-float.show{transform:translateX(0)}
+.wa-dot{width:8px;height:8px;border-radius:50%;background:#25D366;margin-top:4px;flex-shrink:0;animation:pulse 2s infinite}
+.wa-content .wa-head{font-size:12px;font-weight:600;color:#E2F5EB;margin-bottom:3px}
+.wa-content .wa-msg{font-size:12px;color:#A8C4AC;line-height:1.5}
+.wa-content .wa-time{font-size:10px;color:#5A8A60;margin-top:4px}
+
+@media(max-width:768px){
+  nav{padding:20px 24px}
+  nav.scrolled{padding:14px 24px}
+  .nav-links{display:none}
+  .hero{padding:100px 24px 60px}
+  section{padding:60px 24px}
+  .stats{padding:32px 24px;gap:0;flex-wrap:wrap}
+  .stat-item{padding:16px 24px;border-right:none;border-bottom:1px solid var(--border);width:50%}
+  .step-row{grid-template-columns:40px 1fr;gap:16px}
+  .step-visual{display:none}
+  .pricing-grid{grid-template-columns:1fr}
+  .how-section{padding:60px 24px}
+  .pricing-section{padding:60px 24px}
+  .cta-section{padding:80px 24px}
+  footer{padding:32px 24px}
+  .wa-float{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- WhatsApp notification float -->
+<div class="wa-float" id="waFloat">
+  <div class="wa-dot"></div>
+  <div class="wa-content">
+    <div class="wa-head">⚠️ Skorr Alert</div>
+    <div class="wa-msg">Margin on <strong>Lays Classic</strong> dropped from 33% → 14%. Check cost price.</div>
+    <div class="wa-time">Just now · via WhatsApp</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">Skorr<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <a href="#pricing" class="nav-cta">Start free →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-eyebrow">
+    <span></span> Built for Indian retail & e-commerce SMBs
+  </div>
+
+  <h1 class="hero-title">
+    <div class="line"><span>Your shop's</span></div>
+    <div class="line"><span><em class="gold">profit brain.</em></span></div>
+    <div class="line"><span class="outline">Always on.</span></div>
+  </h1>
+
+  <p class="hero-sub">
+    Skorr watches your margins 24/7, scores your suppliers by actual profit, and warns you before cash runs out — all on WhatsApp.
+  </p>
+
+  <div class="hero-actions">
+    <a href="#pricing" class="btn-primary">Start free — no credit card <span>→</span></a>
+    <a href="#how" class="btn-secondary">See how it works <span>↓</span></a>
+  </div>
+
+  <div class="hero-cards">
+    <div class="cards-row">
+      <div class="float-card">
+        <div class="fc-label">Net Margin Today</div>
+        <div class="fc-value green">31.4%</div>
+        <div class="fc-sub"><span class="up">↑ 2.1%</span> vs last month</div>
+        <div class="fc-bar"><div class="fc-bar-fill green"></div></div>
+      </div>
+      <div class="float-card">
+        <div class="fc-label">Best Supplier Score</div>
+        <div class="fc-value gold">84/100</div>
+        <div class="fc-sub"><span class="up">Gupta Distributors</span></div>
+        <div class="fc-bar"><div class="fc-bar-fill gold"></div></div>
+      </div>
+      <div class="float-card">
+        <div class="fc-label">Cash Gap in 18 days</div>
+        <div class="fc-value red">₹17K</div>
+        <div class="fc-sub"><span class="down">⚠️ Alert sent to WhatsApp</span></div>
+        <div class="fc-bar"><div class="fc-bar-fill red"></div></div>
+      </div>
+    </div>
+    <div class="alert-card">
+      <div class="alert-icon">⚠️</div>
+      <div>
+        <div class="alert-title">Margin erosion detected</div>
+        <div class="alert-body">Clinic Plus 200ml dropped from 33% → 14.6%. Supplier may have changed cost price silently.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-item">
+    <div class="stat-num" data-count="60">0</div>
+    <div class="stat-label">Million SMBs in India running on spreadsheets</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">₹0</div>
+    <div class="stat-label">Hardware needed — works on any Android phone</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">24/7</div>
+    <div class="stat-label">Margin monitoring while you sleep</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num">90</div>
+    <div class="stat-label">Days to your first Supplier Profit Score</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="reveal">
+    <div class="section-eyebrow">What Skorr does</div>
+    <h2 class="section-title">Six features your shop<br>has been waiting for.</h2>
+    <p class="section-sub">Built from scratch for Indian retail and e-commerce shop owners — the tools that actually match how business works on the ground.</p>
+  </div>
+
+  <div class="features-grid reveal">
+    <div class="feature-card">
+      <div class="fc-icon g">📉</div>
+      <div class="feature-name">Margin Erosion Alert</div>
+      <div class="feature-desc">The moment your profit on any product drops below your threshold — you get a WhatsApp message. Before you lose thousands silently.</div>
+      <span class="feature-tag">Hero feature</span>
+    </div>
+    <div class="feature-card">
+      <div class="fc-icon a">🏆</div>
+      <div class="feature-name">Supplier True Profit Score</div>
+      <div class="feature-desc">Every supplier gets a score 0–100 based on net margin, return rate, credit days, delivery reliability, and price drift. Not gut feeling.</div>
+      <span class="feature-tag gold">Only on Skorr</span>
+    </div>
+    <div class="feature-card">
+      <div class="fc-icon r">💸</div>
+      <div class="feature-name">Cash Crunch Predictor</div>
+      <div class="feature-desc">Warns you 2–4 weeks before you run out of cash — based on your upcoming payables, pending receivables, and reorder schedule.</div>
+      <span class="feature-tag">AI powered</span>
+    </div>
+    <div class="feature-card">
+      <div class="fc-icon g">📱</div>
+      <div class="feature-name">Smart QR Billing</div>
+      <div class="feature-desc">No barcode scanner needed. Search any product, set quantity, generate a locked UPI QR. Payment auto-deducts inventory. Zero manual entry.</div>
+      <span class="feature-tag">No hardware needed</span>
+    </div>
+    <div class="feature-card">
+      <div class="fc-icon a">📊</div>
+      <div class="feature-name">Deal ROI Simulator</div>
+      <div class="feature-desc">"Should I take this bulk order?" Enter cost, quantity, expected sell rate. Get break-even month, 6-month ROI, and cash flow impact — instantly.</div>
+      <span class="feature-tag gold">Before you commit</span>
+    </div>
+    <div class="feature-card">
+      <div class="fc-icon r">🤖</div>
+      <div class="feature-name">AI Business Assistant</div>
+      <div class="feature-desc">Ask "Which product made me most money last month?" or "Should I drop this supplier?" Get answers from your actual shop data.</div>
+      <span class="feature-tag">Your CFO at ₹299/mo</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<div class="how-section" id="how">
+  <div class="how-inner">
+    <div class="reveal">
+      <div class="section-eyebrow">How it works</div>
+      <h2 class="section-title">From signup to<br>first insight in minutes.</h2>
+    </div>
+    <div class="steps-list reveal">
+      <div class="step-row">
+        <div class="step-n">01</div>
+        <div>
+          <div class="step-text-title">Add your products & suppliers</div>
+          <div class="step-text-desc">Name, cost price, selling price, margin threshold. Supplier name, credit days, contact. Takes under 5 minutes for your top 10 products.</div>
+        </div>
+        <div class="step-visual">
+          <span class="hi">✓</span> Clinic Plus 200ml<br>
+          &nbsp;&nbsp;Cost: <span class="go">₹100</span> &nbsp;Sell: <span class="hi">₹150</span><br>
+          &nbsp;&nbsp;Alert if below: <span class="go">25%</span><br>
+          <span class="hi">✓</span> Supplier: Sharma Traders<br>
+          &nbsp;&nbsp;Credit: <span class="go">30 days</span>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-n">02</div>
+        <div>
+          <div class="step-text-title">Use QR billing for every sale</div>
+          <div class="step-text-desc">Search product → set quantity → generate QR → customer pays on UPI → inventory auto-updates. No cash handling headaches.</div>
+        </div>
+        <div class="step-visual">
+          🛒 Cart for Ramesh<br>
+          <span class="hi">Lays ×1</span> &nbsp;&nbsp;&nbsp;<span class="go">₹20</span><br>
+          <span class="hi">Colgate ×1</span> &nbsp;<span class="go">₹65</span><br>
+          <span class="hi">Phynol ×1</span> &nbsp;<span class="go">₹55</span><br>
+          <span class="go">Total: ₹140</span> → QR generated<br>
+          <span class="hi">✓ Paid · Inventory updated</span>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-n">03</div>
+        <div>
+          <div class="step-text-title">Get WhatsApp alerts automatically</div>
+          <div class="step-text-desc">Every night Skorr recalculates your margins and cash position. If anything needs your attention — you get a message before your morning chai.</div>
+        </div>
+        <div class="step-visual">
+          <span class="re">⚠️ Skorr Alert</span><br>
+          Margin on <span class="go">Clinic Plus</span> dropped<br>
+          Was: <span class="hi">33.3%</span> &nbsp;Now: <span class="re">14.6%</span><br>
+          Check cost price with supplier.<br>
+          <span style="color:#5A8A60">— Skorr · 12:04 AM ✓✓</span>
+        </div>
+      </div>
+      <div class="step-row">
+        <div class="step-n">04</div>
+        <div>
+          <div class="step-text-title">Watch your supplier scores grow</div>
+          <div class="step-text-desc">After 90 days, every supplier has a score based on real data from your shop. The truth might surprise you — it always does.</div>
+        </div>
+        <div class="step-visual">
+          🏆 Supplier Rankings<br>
+          <span class="hi">1. Gupta Dist. &nbsp;&nbsp;84/100 ★</span><br>
+          &nbsp;&nbsp;Low returns, on-time delivery<br>
+          <span class="re">2. Sharma Traders 41/100</span><br>
+          &nbsp;&nbsp;Est. loss 90d: <span class="re">₹4,200</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPLIER SCORE DEMO -->
+<section class="score-section reveal">
+  <div class="section-eyebrow">Supplier true profit score</div>
+  <h2 class="section-title">The one number no tool<br>has ever given you.</h2>
+  <p class="section-sub">Built from 5 real signals — not gut feeling. Your cheapest supplier is often your most expensive one.</p>
+
+  <div class="score-demo">
+    <div class="score-header">
+      <div>
+        <div class="score-title">Supplier Rankings · Rakesh General Store</div>
+        <div class="score-subtitle">Based on 90 days of data · 4 suppliers</div>
+      </div>
+    </div>
+
+    <div class="supplier-row">
+      <div class="sup-rank">#1</div>
+      <div>
+        <div class="sup-name">Gupta Distributors</div>
+        <div class="sup-detail">2% returns · 30-day credit · Always on time</div>
+      </div>
+      <div class="sup-bar-wrap">
+        <div class="sup-bar"><div class="sup-bar-inner" style="width:84%;background:#2EAD54" data-w="84%"></div></div>
+        <div class="sup-score" style="color:#2EAD54">84</div>
+      </div>
+      <span class="sup-badge best">Best profit</span>
+    </div>
+
+    <div class="supplier-row">
+      <div class="sup-rank">#2</div>
+      <div>
+        <div class="sup-name">Verma & Sons</div>
+        <div class="sup-detail">5% returns · 15-day credit · Usually on time</div>
+      </div>
+      <div class="sup-bar-wrap">
+        <div class="sup-bar"><div class="sup-bar-inner" style="width:67%;background:#C9A84C" data-w="67%"></div></div>
+        <div class="sup-score" style="color:#C9A84C">67</div>
+      </div>
+      <span class="sup-badge ok">Acceptable</span>
+    </div>
+
+    <div class="supplier-row">
+      <div class="sup-rank">#3</div>
+      <div>
+        <div class="sup-name">Patel Wholesale</div>
+        <div class="sup-detail">9% returns · 0-day credit · Often delayed</div>
+      </div>
+      <div class="sup-bar-wrap">
+        <div class="sup-bar"><div class="sup-bar-inner" style="width:52%;background:#C9A84C" data-w="52%"></div></div>
+        <div class="sup-score" style="color:#C9A84C">52</div>
+      </div>
+      <span class="sup-badge ok">Review needed</span>
+    </div>
+
+    <div class="supplier-row">
+      <div class="sup-rank">#4</div>
+      <div>
+        <div class="sup-name">Sharma Traders</div>
+        <div class="sup-detail">22% returns · 0-day credit · Loss: ₹6,400</div>
+      </div>
+      <div class="sup-bar-wrap">
+        <div class="sup-bar"><div class="sup-bar-inner" style="width:34%;background:#C94C4C" data-w="34%"></div></div>
+        <div class="sup-score" style="color:#C94C4C">34</div>
+      </div>
+      <span class="sup-badge warn">Switch supplier</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<div class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div class="reveal" style="text-align:center">
+      <div class="section-eyebrow">Simple pricing</div>
+      <h2 class="section-title">Less than your daily chai.<br>More valuable than an accountant.</h2>
+    </div>
+    <div class="pricing-grid reveal">
+      <div class="price-card">
+        <div class="price-name">Starter</div>
+        <div class="price-amount">₹299<span>/mo</span></div>
+        <div class="price-period">Billed monthly · Cancel anytime</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li>Up to 100 products</li>
+          <li>Margin alerts on WhatsApp</li>
+          <li>Smart QR billing</li>
+          <li>3 supplier profiles</li>
+          <li>30-day cash flow view</li>
+        </ul>
+        <a href="#" class="price-btn outline">Start free trial →</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-name">Growth</div>
+        <div class="price-amount">₹599<span>/mo</span></div>
+        <div class="price-period">Billed monthly · Cancel anytime</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li>Unlimited products</li>
+          <li>Margin alerts + Cash crunch predictor</li>
+          <li>Smart QR billing</li>
+          <li>Unlimited suppliers + Profit Score</li>
+          <li>Deal ROI simulator</li>
+          <li>AI business assistant</li>
+          <li>Priority WhatsApp support</li>
+        </ul>
+        <a href="#" class="price-btn solid">Start free trial →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <h2 class="cta-title reveal">Stop running your shop on memory.<br><span style="color:var(--gold)">Start running it on data.</span></h2>
+  <p class="cta-sub reveal">Join shop owners across India who get margin alerts before they lose money, not after.</p>
+  <div class="cta-actions reveal">
+    <a href="#pricing" class="btn-primary">Start free — 14 days free trial →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Skorr<span>.</span></div>
+  <div class="footer-copy">© 2025 Skorr. Built for Indian retail.</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+});
+function animRing(){
+  rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+document.querySelectorAll('a,button,.feature-card,.price-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.style.width='48px';ring.style.height='48px';ring.style.opacity='0.6'});
+  el.addEventListener('mouseleave',()=>{ring.style.width='32px';ring.style.height='32px';ring.style.opacity='1'});
+});
+
+// Nav scroll
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('scrolled',window.scrollY>60);
+});
+
+// Scroll reveal
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Animated counter
+function animCount(el,target){
+  let start=0;
+  const step=()=>{
+    start+=Math.ceil(target/60);
+    if(start>=target){el.textContent=target+'M+';return}
+    el.textContent=start;
+    requestAnimationFrame(step);
+  };
+  step();
+}
+const cObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const el=e.target;
+      if(el.dataset.count)animCount(el,parseInt(el.dataset.count));
+      cObs.unobserve(el);
+    }
+  });
+},{threshold:0.5});
+document.querySelectorAll('[data-count]').forEach(el=>cObs.observe(el));
+
+setTimeout(()=>{
+  document.getElementById('waFloat').classList.add('show');
+  setTimeout(()=>document.getElementById('waFloat').classList.remove('show'),5000);
+},3500);
+
+const barObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.sup-bar-inner').forEach(bar=>{
+        const w=bar.style.width;
+        bar.style.width='0';
+        setTimeout(()=>bar.style.width=w,100);
+      });
+      barObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.3});
+document.querySelectorAll('.score-demo').forEach(el=>barObs.observe(el));
+
+function animateValue(el,start,end,decimals,prefix,suffix){
+  const duration=1800;const startTime=performance.now();
+  function update(now){
+    const p=Math.min((now-startTime)/duration,1);
+    const ease=1-Math.pow(1-p,4);
+    const val=(start+(end-start)*ease).toFixed(decimals);
+    el.textContent=prefix+val+suffix;
+    if(p<1)requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+const cardObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const vals=e.target.querySelectorAll('.fc-value');
+      if(vals[0])animateValue(vals[0],0,31.4,1,'','%');
+      cardObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.5});
+document.querySelectorAll('.hero-cards').forEach(el=>cardObs.observe(el));
+</script>
+</body>
+</html>
