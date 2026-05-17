@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Skorr — Profit Intelligence for Indian Retail</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -442,7 +448,7 @@ footer{
     <li><a href="#how">How it works</a></li>
     <li><a href="#pricing">Pricing</a></li>
   </ul>
-  <a href="#pricing" class="nav-cta">Start free →</a>
+  <a href="skorr-signup.html" class="nav-cta">Start free →</a>
 </nav>
 
 <!-- HERO -->
@@ -465,7 +471,7 @@ footer{
   </p>
 
   <div class="hero-actions">
-    <a href="#pricing" class="btn-primary">Start free — no credit card <span>→</span></a>
+    <a href="skorr-signup.html" class="btn-primary">Start free — no credit card <span>→</span></a>
     <a href="#how" class="btn-secondary">See how it works <span>↓</span></a>
   </div>
 
@@ -725,7 +731,7 @@ footer{
           <li>3 supplier profiles</li>
           <li>30-day cash flow view</li>
         </ul>
-        <a href="#" class="price-btn outline">Start free trial →</a>
+        <a href="skorr-signup.html" class="price-btn outline">Start free trial →</a>
       </div>
       <div class="price-card featured">
         <div class="price-name">Growth</div>
@@ -741,7 +747,7 @@ footer{
           <li>AI business assistant</li>
           <li>Priority WhatsApp support</li>
         </ul>
-        <a href="#" class="price-btn solid">Start free trial →</a>
+        <a href="skorr-signup.html" class="price-btn solid">Start free trial →</a>
       </div>
     </div>
   </div>
@@ -753,7 +759,7 @@ footer{
   <h2 class="cta-title reveal">Stop running your shop on memory.<br><span style="color:var(--gold)">Start running it on data.</span></h2>
   <p class="cta-sub reveal">Join shop owners across India who get margin alerts before they lose money, not after.</p>
   <div class="cta-actions reveal">
-    <a href="#pricing" class="btn-primary">Start free — 14 days free trial →</a>
+    <a href="skorr-signup.html" class="btn-primary">Start free — 14 days free trial →</a>
   </div>
 </section>
 
@@ -822,11 +828,13 @@ const cObs=new IntersectionObserver(entries=>{
 },{threshold:0.5});
 document.querySelectorAll('[data-count]').forEach(el=>cObs.observe(el));
 
+// WA float notification
 setTimeout(()=>{
   document.getElementById('waFloat').classList.add('show');
   setTimeout(()=>document.getElementById('waFloat').classList.remove('show'),5000);
 },3500);
 
+// Supplier bar animation on scroll
 const barObs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(e.isIntersecting){
@@ -841,6 +849,7 @@ const barObs=new IntersectionObserver(entries=>{
 },{threshold:0.3});
 document.querySelectorAll('.score-demo').forEach(el=>barObs.observe(el));
 
+// Floating card number animation
 function animateValue(el,start,end,decimals,prefix,suffix){
   const duration=1800;const startTime=performance.now();
   function update(now){

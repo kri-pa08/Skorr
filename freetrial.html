@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Start Free Trial — Skorr</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080C0A;
+  --bg2:#0D1410;
+  --bg3:#111A13;
+  --gold:#C9A84C;
+  --gold2:#E8C96A;
+  --green:#1A6B3A;
+  --green2:#22873F;
+  --green3:#2EAD54;
+  --text:#F0EDE6;
+  --text2:#A8A49A;
+  --text3:#5C5A54;
+  --border:#1E2820;
+  --border2:#263028;
+  --red:#C94C4C;
+  --font-head:'Syne',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  min-height:100vh;
+  overflow-x:hidden;
+  cursor:none;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+}
+
+/* Cursor */
+.cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s}
+.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(201,168,76,0.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width 0.2s,height 0.2s,opacity 0.2s}
+
+/* Grain */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:0.35}
+
+/* LEFT PANEL */
+.left{
+  position:sticky;top:0;height:100vh;
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  justify-content:space-between;
+  padding:48px;
+  overflow:hidden;
+}
+.left-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 30% 70%, rgba(26,107,58,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 80% 20%, rgba(201,168,76,0.05) 0%, transparent 60%);
+  pointer-events:none;
+}
+.left-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(30,40,32,0.25) 1px,transparent 1px),linear-gradient(90deg,rgba(30,40,32,0.25) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 80% 80% at 40% 60%,black 10%,transparent 75%);
+  pointer-events:none;
+}
+
+.left-logo{
+  font-family:var(--font-head);font-size:20px;font-weight:800;
+  color:var(--text);text-decoration:none;letter-spacing:-0.3px;
+  position:relative;z-index:2;display:inline-flex;align-items:center;gap:8px;
+  opacity:0;animation:fadeUp 0.6s 0.1s forwards;transform:translateY(12px);
+}
+.left-logo span{color:var(--gold)}
+
+.left-main{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 0}
+
+.left-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.18);
+  padding:5px 12px;border-radius:100px;
+  font-size:11px;font-weight:500;color:var(--gold);letter-spacing:0.07em;
+  text-transform:uppercase;margin-bottom:28px;width:fit-content;
+  opacity:0;animation:fadeUp 0.6s 0.2s forwards;transform:translateY(12px);
+}
+.left-eyebrow::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+
+.left-title{
+  font-family:var(--font-head);
+  font-size:clamp(32px,3.5vw,52px);
+  font-weight:800;line-height:1.05;
+  letter-spacing:-1.5px;margin-bottom:20px;
+  opacity:0;animation:fadeUp 0.7s 0.35s forwards;transform:translateY(16px);
+}
+.left-title .gold{color:var(--gold)}
+.left-title .dim{color:var(--text3)}
+
+.left-sub{
+  font-size:15px;color:var(--text2);line-height:1.7;
+  max-width:380px;font-weight:300;margin-bottom:40px;
+  opacity:0;animation:fadeUp 0.7s 0.5s forwards;transform:translateY(16px);
+}
+
+/* Testimonial card */
+.testimonial{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:12px;padding:20px 22px;
+  opacity:0;animation:fadeUp 0.7s 0.65s forwards;transform:translateY(16px);
+  max-width:400px;
+}
+.testimonial-text{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px;font-style:italic;font-weight:300}
+.testimonial-author{display:flex;align-items:center;gap:10px}
+.testimonial-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--gold));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#080C0A;flex-shrink:0}
+.testimonial-name{font-size:13px;font-weight:500;color:var(--text)}
+.testimonial-shop{font-size:11px;color:var(--text3)}
+
+/* Stats row */
+.left-stats{
+  display:flex;gap:0;border-top:1px solid var(--border);padding-top:32px;
+  position:relative;z-index:2;
+  opacity:0;animation:fadeUp 0.7s 0.8s forwards;transform:translateY(12px);
+}
+.left-stat{flex:1;padding-right:24px}
+.left-stat:last-child{padding-right:0;border-right:none}
+.ls-num{font-family:var(--font-head);font-size:24px;font-weight:800;color:var(--gold);line-height:1}
+.ls-label{font-size:11px;color:var(--text3);margin-top:4px;line-height:1.4}
+
+/* RIGHT PANEL */
+.right{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:48px;
+  position:relative;z-index:2;
+}
+
+.form-wrap{width:100%;max-width:420px}
+
+.form-header{margin-bottom:36px;opacity:0;animation:fadeUp 0.6s 0.3s forwards;transform:translateY(12px)}
+.form-title{font-family:var(--font-head);font-size:26px;font-weight:800;letter-spacing:-0.5px;margin-bottom:6px}
+.form-sub{font-size:14px;color:var(--text2);font-weight:300}
+.form-sub a{color:var(--gold);text-decoration:none}
+.form-sub a:hover{text-decoration:underline}
+
+/* Steps indicator */
+.steps-wrap{
+  display:flex;align-items:center;gap:0;margin-bottom:36px;
+  opacity:0;animation:fadeUp 0.6s 0.4s forwards;transform:translateY(12px);
+}
+.step-item{display:flex;align-items:center;gap:8px;flex:1}
+.step-circle{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:600;font-family:var(--font-head);
+  flex-shrink:0;transition:all 0.3s;
+}
+.step-circle.active{background:var(--gold);color:#080C0A}
+.step-circle.done{background:var(--green3);color:#fff}
+.step-circle.inactive{background:var(--border2);color:var(--text3)}
+.step-label{font-size:11px;color:var(--text3);font-weight:400}
+.step-label.active{color:var(--text)}
+.step-connector{flex:1;height:1px;background:var(--border2);margin:0 8px}
+.step-connector.done{background:var(--green3)}
+
+/* Form */
+.form-body{opacity:0;animation:fadeUp 0.6s 0.5s forwards;transform:translateY(12px)}
+
+.form-section{display:none}
+.form-section.active{display:flex;flex-direction:column;gap:18px}
+
+.field{display:flex;flex-direction:column;gap:6px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field label{font-size:12px;font-weight:500;color:var(--text2);letter-spacing:0.04em;text-transform:uppercase}
+
+.input-wrap{position:relative}
+.input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;opacity:0.5;pointer-events:none}
+input,select{
+  width:100%;
+  background:var(--bg2);
+  border:1px solid var(--border2);
+  border-radius:8px;
+  padding:12px 14px 12px 40px;
+  font-size:14px;color:var(--text);
+  font-family:var(--font-body);
+  outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+  -webkit-appearance:none;
+}
+input::placeholder{color:var(--text3)}
+input:focus,select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.08)}
+input.error{border-color:var(--red)}
+select option{background:var(--bg2);color:var(--text)}
+
+.no-icon input, .no-icon select{padding-left:14px}
+
+.field-hint{font-size:11px;color:var(--text3);margin-top:2px}
+.field-error{font-size:11px;color:var(--red);margin-top:2px;display:none}
+input.error + .field-error{display:block}
+
+/* Password strength */
+.pwd-strength{margin-top:8px;display:none}
+.pwd-strength.show{display:block}
+.pwd-bars{display:flex;gap:4px;margin-bottom:4px}
+.pwd-bar{flex:1;height:3px;border-radius:2px;background:var(--border2);transition:background 0.3s}
+.pwd-bar.weak{background:var(--red)}
+.pwd-bar.medium{background:var(--gold)}
+.pwd-bar.strong{background:var(--green3)}
+.pwd-label{font-size:11px;color:var(--text3)}
+
+/* Plan selector */
+.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.plan-option{position:relative;cursor:pointer}
+.plan-option input[type=radio]{position:absolute;opacity:0;width:0;height:0}
+.plan-card{
+  border:1px solid var(--border2);border-radius:10px;padding:14px;
+  transition:all 0.2s;background:var(--bg2);
+}
+.plan-option input:checked + .plan-card{border-color:var(--gold);background:rgba(201,168,76,0.05)}
+.plan-card:hover{border-color:var(--border)}
+.plan-name{font-size:13px;font-weight:600;margin-bottom:2px;font-family:var(--font-head)}
+.plan-price{font-size:20px;font-weight:800;color:var(--gold);font-family:var(--font-head);line-height:1}
+.plan-price span{font-size:12px;font-weight:400;color:var(--text3)}
+.plan-tag{font-size:10px;color:var(--text3);margin-top:4px}
+.plan-popular{position:absolute;top:-8px;right:10px;background:var(--gold);color:#080C0A;font-size:9px;font-weight:700;padding:2px 8px;border-radius:100px;font-family:var(--font-head)}
+
+/* Checkbox */
+.checkbox-wrap{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.checkbox-wrap input[type=checkbox]{display:none}
+.checkbox-box{
+  width:18px;height:18px;border:1px solid var(--border2);border-radius:4px;
+  background:var(--bg2);flex-shrink:0;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.2s;
+}
+.checkbox-wrap input:checked + .checkbox-box{background:var(--gold);border-color:var(--gold)}
+.checkbox-wrap input:checked + .checkbox-box::after{content:'✓';font-size:11px;color:#080C0A;font-weight:700}
+.checkbox-label{font-size:13px;color:var(--text2);line-height:1.5}
+.checkbox-label a{color:var(--gold);text-decoration:none}
+
+/* Buttons */
+.btn-row{display:flex;gap:10px;margin-top:8px}
+.btn-next{
+  flex:1;background:var(--gold);color:#080C0A;
+  padding:14px;border-radius:8px;border:none;
+  font-size:15px;font-weight:700;font-family:var(--font-head);
+  cursor:pointer;transition:all 0.25s;letter-spacing:0.01em;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-next:hover{background:var(--gold2);transform:translateY(-1px)}
+.btn-next:active{transform:translateY(0)}
+.btn-back{
+  background:transparent;color:var(--text2);
+  padding:14px 20px;border-radius:8px;border:1px solid var(--border2);
+  font-size:14px;font-weight:400;font-family:var(--font-body);
+  cursor:pointer;transition:all 0.2s;
+}
+.btn-back:hover{color:var(--text);border-color:var(--text3)}
+
+/* Success state */
+.success-wrap{display:none;text-align:center;padding:20px 0}
+.success-wrap.show{display:block}
+.success-icon{width:72px;height:72px;border-radius:50%;background:rgba(46,173,84,0.1);border:1px solid rgba(46,173,84,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:30px;animation:popIn 0.5s cubic-bezier(0.16,1,0.3,1)}
+@keyframes popIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+.success-title{font-family:var(--font-head);font-size:24px;font-weight:800;margin-bottom:8px;letter-spacing:-0.5px}
+.success-sub{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:28px;font-weight:300}
+.success-items{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:left;margin-bottom:24px}
+.success-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:0.5px solid var(--border);font-size:13px;color:var(--text2)}
+.success-item:last-child{border-bottom:none}
+.success-item::before{content:'✓';color:var(--green3);font-weight:700;font-size:12px}
+.btn-dashboard{display:block;background:var(--gold);color:#080C0A;padding:14px;border-radius:8px;text-align:center;text-decoration:none;font-weight:700;font-size:15px;font-family:var(--font-head);transition:all 0.2s}
+.btn-dashboard:hover{background:var(--gold2)}
+
+/* Divider */
+.or-divider{display:flex;align-items:center;gap:12px;margin:4px 0}
+.or-line{flex:1;height:1px;background:var(--border)}
+.or-text{font-size:12px;color:var(--text3)}
+
+/* Social login */
+.social-btn{
+  width:100%;background:var(--bg2);border:1px solid var(--border2);
+  border-radius:8px;padding:12px;
+  font-size:13px;color:var(--text2);font-family:var(--font-body);
+  cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.social-btn:hover{border-color:var(--border);color:var(--text)}
+
+/* Trust badges */
+.trust-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)}
+.trust-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)}
+
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+
+/* Responsive */
+@media(max-width:768px){
+  body{grid-template-columns:1fr}
+  .left{display:none}
+  .right{padding:32px 24px;align-items:flex-start;padding-top:48px}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- LEFT PANEL -->
+<div class="left">
+  <div class="left-bg"></div>
+  <div class="left-grid"></div>
+
+  <a href="skorr-homepage.html" class="left-logo">Skorr<span>.</span></a>
+
+  <div class="left-main">
+    <div class="left-eyebrow"><span></span>14-day free trial · No card needed</div>
+
+    <h1 class="left-title">
+      Your shop's<br>
+      profit brain<br>
+      <span class="gold">starts here.</span>
+    </h1>
+
+    <p class="left-sub">
+      Join shop owners across India who get margin alerts before they lose money, supplier scores based on real data, and cash warnings before a crisis hits.
+    </p>
+
+    <div class="testimonial">
+      <div class="testimonial-text">"I had no idea my margin on Clinic Plus dropped from 33% to 14% until Skorr sent me a WhatsApp at midnight. Saved me from reordering 500 units at a loss."</div>
+      <div class="testimonial-author">
+        <div class="testimonial-avatar">RG</div>
+        <div>
+          <div class="testimonial-name">Rakesh Gupta</div>
+          <div class="testimonial-shop">Rakesh General Store, Delhi</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="left-stats">
+    <div class="left-stat">
+      <div class="ls-num">14</div>
+      <div class="ls-label">Days free, no card required</div>
+    </div>
+    <div class="left-stat">
+      <div class="ls-num">₹0</div>
+      <div class="ls-label">Hardware needed ever</div>
+    </div>
+    <div class="left-stat">
+      <div class="ls-num">2 min</div>
+      <div class="ls-label">To your first margin alert</div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right">
+  <div class="form-wrap">
+
+    <div class="form-header">
+      <div class="form-title">Start your free trial</div>
+      <div class="form-sub">Already have an account? <a href="#">Sign in</a></div>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps-wrap" id="stepsWrap">
+      <div class="step-item">
+        <div class="step-circle active" id="sc1">1</div>
+        <div class="step-label active" id="sl1">Your details</div>
+      </div>
+      <div class="step-connector" id="conn1"></div>
+      <div class="step-item">
+        <div class="step-circle inactive" id="sc2">2</div>
+        <div class="step-label" id="sl2">Shop info</div>
+      </div>
+      <div class="step-connector" id="conn2"></div>
+      <div class="step-item">
+        <div class="step-circle inactive" id="sc3">3</div>
+        <div class="step-label" id="sl3">Choose plan</div>
+      </div>
+    </div>
+
+    <div class="form-body" id="formBody">
+
+      <!-- STEP 1 -->
+      <div class="form-section active" id="step1">
+
+        <div class="social-btn" onclick="handleGoogle()">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
+        </div>
+
+        <div class="or-divider"><div class="or-line"></div><div class="or-text">or fill in details</div><div class="or-line"></div></div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>First name</label>
+            <div class="input-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="firstName" placeholder="Rakesh" autocomplete="given-name"/>
+            </div>
+          </div>
+          <div class="field">
+            <label>Last name</label>
+            <div class="input-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="lastName" placeholder="Gupta" autocomplete="family-name"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Email address</label>
+          <div class="input-wrap">
+            <span class="input-icon">📧</span>
+            <input type="email" id="email" placeholder="rakesh@yourshop.com" autocomplete="email"/>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>WhatsApp number</label>
+          <div class="input-wrap">
+            <span class="input-icon">📱</span>
+            <input type="tel" id="phone" placeholder="+91 98000 00000" autocomplete="tel"/>
+          </div>
+          <div class="field-hint">This is where your margin alerts will be sent</div>
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="password" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkPassword(this)"/>
+          </div>
+          <div class="pwd-strength" id="pwdStrength">
+            <div class="pwd-bars">
+              <div class="pwd-bar" id="pb1"></div>
+              <div class="pwd-bar" id="pb2"></div>
+              <div class="pwd-bar" id="pb3"></div>
+              <div class="pwd-bar" id="pb4"></div>
+            </div>
+            <div class="pwd-label" id="pwdLabel">Enter a password</div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-next" onclick="goStep(2)">Continue <span>→</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="form-section" id="step2">
+
+        <div class="field">
+          <label>Shop / business name</label>
+          <div class="input-wrap">
+            <span class="input-icon">🏪</span>
+            <input type="text" id="shopName" placeholder="Rakesh General Store"/>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>City</label>
+            <div class="input-wrap">
+              <span class="input-icon">📍</span>
+              <input type="text" id="city" placeholder="Ghaziabad"/>
+            </div>
+          </div>
+          <div class="field no-icon">
+            <label>Business type</label>
+            <select id="shopType">
+              <option value="">Select type</option>
+              <option value="retail">Retail shop</option>
+              <option value="wholesale">Wholesale</option>
+              <option value="ecommerce">E-commerce</option>
+              <option value="distribution">Distribution</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field no-icon">
+          <label>How many products do you sell?</label>
+          <select id="productCount">
+            <option value="">Approximate count</option>
+            <option value="1-20">1–20 products</option>
+            <option value="21-100">21–100 products</option>
+            <option value="101-500">101–500 products</option>
+            <option value="500+">500+ products</option>
+          </select>
+        </div>
+
+        <div class="field no-icon">
+          <label>How do you currently track margins?</label>
+          <select id="currentMethod">
+            <option value="">Select method</option>
+            <option value="memory">Memory / gut feeling</option>
+            <option value="notebook">Notebook / bahi khata</option>
+            <option value="excel">Excel / Google Sheets</option>
+            <option value="tally">Tally</option>
+            <option value="app">Another app</option>
+          </select>
+          <div class="field-hint">Helps us personalise your onboarding</div>
+        </div>
+
+        <div class="field">
+          <label>How did you hear about Skorr?</label>
+          <div class="input-wrap">
+            <span class="input-icon">💬</span>
+            <input type="text" id="referral" placeholder="Twitter, friend, Google..."/>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep(1)">← Back</button>
+          <button class="btn-next" onclick="goStep(3)">Continue <span>→</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="form-section" id="step3">
+
+        <div class="field no-icon">
+          <label>Choose your plan — 14 days free on both</label>
+          <div class="plan-grid">
+            <label class="plan-option">
+              <input type="radio" name="plan" value="starter" checked/>
+              <div class="plan-card">
+                <div class="plan-name">Starter</div>
+                <div class="plan-price">₹299<span>/mo after trial</span></div>
+                <div class="plan-tag">Up to 100 products · 3 suppliers</div>
+              </div>
+            </label>
+            <label class="plan-option">
+              <div class="plan-popular">Popular</div>
+              <input type="radio" name="plan" value="growth"/>
+              <div class="plan-card">
+                <div class="plan-name">Growth</div>
+                <div class="plan-price">₹599<span>/mo after trial</span></div>
+                <div class="plan-tag">Unlimited · AI assistant · Score</div>
+              </div>
+            </label>
+          </div>
+          <div class="field-hint">No credit card needed. Cancel anytime before trial ends.</div>
+        </div>
+
+        <label class="checkbox-wrap">
+          <input type="checkbox" id="whatsappConsent" checked/>
+          <div class="checkbox-box"></div>
+          <div class="checkbox-label">Send me margin alerts and business insights on WhatsApp</div>
+        </label>
+
+        <label class="checkbox-wrap">
+          <input type="checkbox" id="termsCheck"/>
+          <div class="checkbox-box"></div>
+          <div class="checkbox-label">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></div>
+        </label>
+
+        <div class="btn-row">
+          <button class="btn-back" onclick="goStep(2)">← Back</button>
+          <button class="btn-next" onclick="handleSubmit()" id="submitBtn">
+            <span id="submitText">Start 14-day free trial →</span>
+          </button>
+        </div>
+
+        <div class="trust-row">
+          <div class="trust-item">🔒 SSL encrypted</div>
+          <div class="trust-item">✓ No credit card</div>
+          <div class="trust-item">✓ Cancel anytime</div>
+          <div class="trust-item">🇮🇳 Made in India</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-wrap" id="successWrap">
+      <div class="success-icon">✓</div>
+      <div class="success-title">You're in, <span id="successName">Rakesh</span>!</div>
+      <div class="success-sub">Your 14-day free trial has started. Add your first product and get your first margin alert in under 2 minutes.</div>
+      <div class="success-items">
+        <div class="success-item">WhatsApp alerts set up for your number</div>
+        <div class="success-item">14-day trial started — no card needed</div>
+        <div class="success-item">Your data is encrypted and private</div>
+        <div class="success-item">Cancel anytime from your settings</div>
+      </div>
+      <a href="#" class="btn-dashboard">Go to your dashboard →</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Cursor
+const cursor=document.getElementById('cursor');
+const ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+});
+(function animRing(){
+  rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+})();
+document.querySelectorAll('a,button,input,select,label').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.style.width='44px';ring.style.height='44px';ring.style.opacity='0.5'});
+  el.addEventListener('mouseleave',()=>{ring.style.width='32px';ring.style.height='32px';ring.style.opacity='1'});
+});
+
+// Step navigation
+let currentStep=1;
+function goStep(n){
+  if(n>currentStep && !validateStep(currentStep))return;
+  document.getElementById('step'+currentStep).classList.remove('active');
+  currentStep=n;
+  document.getElementById('step'+n).classList.add('active');
+  updateStepUI();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateStepUI(){
+  for(let i=1;i<=3;i++){
+    const sc=document.getElementById('sc'+i);
+    const sl=document.getElementById('sl'+i);
+    if(i<currentStep){sc.className='step-circle done';sc.textContent='✓';sl.className='step-label'}
+    else if(i===currentStep){sc.className='step-circle active';sc.textContent=i;sl.className='step-label active'}
+    else{sc.className='step-circle inactive';sc.textContent=i;sl.className='step-label'}
+  }
+  const c1=document.getElementById('conn1');
+  const c2=document.getElementById('conn2');
+  if(currentStep>1)c1.classList.add('done');else c1.classList.remove('done');
+  if(currentStep>2)c2.classList.add('done');else c2.classList.remove('done');
+}
+
+// Validation
+function validateStep(n){
+  let valid=true;
+  if(n===1){
+    const fields=[
+      {id:'firstName',msg:'Enter your first name'},
+      {id:'email',msg:'Enter a valid email'},
+      {id:'phone',msg:'Enter your WhatsApp number'},
+      {id:'password',msg:'Password must be at least 8 characters'},
+    ];
+    fields.forEach(f=>{
+      const el=document.getElementById(f.id);
+      const val=el.value.trim();
+      let ok=val.length>0;
+      if(f.id==='email')ok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+      if(f.id==='password')ok=val.length>=8;
+      if(!ok){el.classList.add('error');valid=false;}
+      else el.classList.remove('error');
+    });
+  }
+  if(n===2){
+    const el=document.getElementById('shopName');
+    if(!el.value.trim()){el.classList.add('error');valid=false;}
+    else el.classList.remove('error');
+  }
+  if(n===3){
+    const terms=document.getElementById('termsCheck');
+    if(!terms.checked){alert('Please agree to the Terms of Service to continue.');valid=false;}
+  }
+  return valid;
+}
+
+// Clear error on input
+document.querySelectorAll('input').forEach(el=>{
+  el.addEventListener('input',()=>el.classList.remove('error'));
+});
+
+// Password strength
+function checkPassword(el){
+  const val=el.value;
+  const strength=document.getElementById('pwdStrength');
+  strength.classList.toggle('show',val.length>0);
+  const bars=[1,2,3,4].map(i=>document.getElementById('pb'+i));
+  const label=document.getElementById('pwdLabel');
+  bars.forEach(b=>b.className='pwd-bar');
+  let score=0;
+  if(val.length>=8)score++;
+  if(/[A-Z]/.test(val))score++;
+  if(/[0-9]/.test(val))score++;
+  if(/[^A-Za-z0-9]/.test(val))score++;
+  const cls=score<=1?'weak':score<=2?'medium':'strong';
+  const labels=['','Weak','Medium','Strong','Very strong'];
+  for(let i=0;i<score;i++)bars[i].classList.add(cls);
+  label.textContent=labels[score]||'Enter a password';
+  label.style.color=score<=1?'#C94C4C':score<=2?'#C9A84C':'#2EAD54';
+}
+
+// Submit
+function handleSubmit(){
+  if(!validateStep(3))return;
+  const btn=document.getElementById('submitBtn');
+  const txt=document.getElementById('submitText');
+  btn.disabled=true;
+  txt.textContent='Setting up your account...';
+  setTimeout(()=>{
+    document.getElementById('formBody').style.display='none';
+    document.getElementById('stepsWrap').style.display='none';
+    document.querySelector('.form-header').style.display='none';
+    const sw=document.getElementById('successWrap');
+    sw.classList.add('show');
+    const name=document.getElementById('firstName').value||'there';
+    document.getElementById('successName').textContent=name;
+  },1800);
+}
+
+// Google
+function handleGoogle(){
+  alert('Google OAuth coming soon! Please use the email signup for now.');
+}
+
+// Input focus effects
+document.querySelectorAll('input,select').forEach(el=>{
+  el.addEventListener('focus',()=>{
+    ring.style.width='44px';ring.style.height='44px';
+  });
+  el.addEventListener('blur',()=>{
+    ring.style.width='32px';ring.style.height='32px';ring.style.opacity='1';
+  });
+});
+</script>
+</body>
+</html>
