@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard — Skorr</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080C0A;--bg2:#0D1410;--bg3:#111A13;--bg4:#141F16;
+  --gold:#C9A84C;--gold2:#E8C96A;--gold3:rgba(201,168,76,0.08);
+  --green:#1A6B3A;--green2:#22873F;--green3:#2EAD54;
+  --text:#F0EDE6;--text2:#A8A49A;--text3:#5C5A54;--text4:#3A3835;
+  --border:#1E2820;--border2:#263028;--border3:#1A2318;
+  --red:#C94C4C;--red2:rgba(201,76,76,0.1);
+  --sidebar:220px;
+  --font-head:'Syne',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+  --radius:12px;
+  --shadow:0 4px 24px rgba(0,0,0,0.3);
+}
+
+/* THEMES */
+body.theme-forest{--gold:#C9A84C;--green3:#2EAD54;--bg:#080C0A;--bg2:#0D1410}
+body.theme-ocean{--gold:#4CA8C9;--green3:#4C9AC9;--bg:#080C10;--bg2:#0D1018;--border:#1E2028;--border2:#262830}
+body.theme-sunset{--gold:#C9704C;--green3:#C9A84C;--bg:#0C0806;--bg2:#140F0A;--border:#281E1A;--border2:#302620}
+body.theme-lavender{--gold:#9A7EC9;--green3:#7E9AC9;--bg:#09080C;--bg2:#100D14;--border:#201E28;--border2:#282630}
+body.theme-light{--bg:#F5F2EC;--bg2:#FFFFFF;--bg3:#F0EDE6;--bg4:#E8E4DC;--text:#1A1A18;--text2:#5C5A54;--text3:#A8A49A;--border:#E0DDD6;--border2:#D0CCC4;--gold:#B8942A;--green3:#1A8A3A}
+
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--font-body);
+  display:flex;
+  transition:background 0.4s,color 0.4s;
+  cursor:none;
+}
+
+/* Grain */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.3}
+
+/* Cursor */
+.cursor{position:fixed;width:8px;height:8px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+.cursor-ring{position:fixed;width:28px;height:28px;border:1px solid rgba(201,168,76,0.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width 0.15s,height 0.15s}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar);min-width:var(--sidebar);
+  height:100vh;
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  padding:28px 0;
+  position:relative;z-index:10;
+  transition:width 0.3s,min-width 0.3s,background 0.4s,border-color 0.4s;
+  overflow:hidden;
+}
+.sidebar.collapsed{width:64px;min-width:64px}
+
+.sb-logo{
+  padding:0 20px 24px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:8px;
+  display:flex;align-items:center;gap:10px;
+  white-space:nowrap;overflow:hidden;
+}
+.sb-logo-mark{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-head);font-size:14px;font-weight:800;
+  color:#080C0A;flex-shrink:0;
+}
+.sb-logo-text{font-family:var(--font-head);font-size:18px;font-weight:800;color:var(--text);letter-spacing:-0.3px}
+.sb-logo-text span{color:var(--gold)}
+
+.sb-section{padding:8px 12px 4px;font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;overflow:hidden;transition:opacity 0.2s}
+.sidebar.collapsed .sb-section{opacity:0}
+
+.sb-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 20px;margin:1px 8px;
+  border-radius:8px;cursor:pointer;
+  white-space:nowrap;overflow:hidden;
+  transition:background 0.15s,color 0.15s;
+  text-decoration:none;color:var(--text2);
+  position:relative;
+}
+.sb-item:hover{background:var(--bg3);color:var(--text)}
+.sb-item.active{background:rgba(201,168,76,0.1);color:var(--gold)}
+.sb-item.active .sb-icon{color:var(--gold)}
+.sb-icon{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+.sb-label{font-size:13px;font-weight:400;transition:opacity 0.2s}
+.sidebar.collapsed .sb-label{opacity:0;width:0}
+.sb-badge{background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:100px;margin-left:auto;flex-shrink:0;transition:opacity 0.2s}
+.sidebar.collapsed .sb-badge{opacity:0}
+
+.sb-spacer{flex:1}
+
+.sb-user{
+  padding:16px 20px;
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+  cursor:pointer;overflow:hidden;white-space:nowrap;
+}
+.sb-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,var(--green),var(--gold));
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#080C0A;flex-shrink:0;
+  font-family:var(--font-head);
+}
+.sb-user-info{overflow:hidden}
+.sb-user-name{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-user-plan{font-size:11px;color:var(--gold)}
+
+.sb-collapse-btn{
+  position:absolute;top:50%;right:-12px;transform:translateY(-50%);
+  width:24px;height:24px;border-radius:50%;
+  background:var(--bg2);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;cursor:pointer;z-index:20;
+  transition:background 0.2s;color:var(--text3);
+}
+.sb-collapse-btn:hover{background:var(--bg3);color:var(--text)}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* TOPBAR */
+.topbar{
+  height:60px;min-height:60px;
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 28px;gap:16px;
+  transition:background 0.4s,border-color 0.4s;
+}
+.topbar-greeting{flex:1}
+.topbar-title{font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--text);letter-spacing:-0.2px}
+.topbar-date{font-size:11px;color:var(--text3);margin-top:1px}
+.topbar-actions{display:flex;align-items:center;gap:8px}
+.topbar-btn{
+  width:34px;height:34px;border-radius:8px;
+  background:transparent;border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;cursor:pointer;color:var(--text2);
+  transition:all 0.15s;position:relative;
+}
+.topbar-btn:hover{background:var(--bg3);color:var(--text);border-color:var(--border)}
+.notif-dot{position:absolute;top:6px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg2)}
+.topbar-search{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:8px;padding:6px 12px;
+  font-size:13px;color:var(--text3);cursor:pointer;
+  transition:border-color 0.2s;
+}
+.topbar-search:hover{border-color:var(--border2)}
+.customize-btn{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);
+  border-radius:8px;padding:6px 14px;
+  font-size:13px;color:var(--gold);cursor:pointer;
+  font-weight:500;transition:all 0.2s;white-space:nowrap;
+}
+.customize-btn:hover{background:rgba(201,168,76,0.14)}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:24px 28px;scroll-behavior:smooth}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-track{background:transparent}
+.content::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* WIDGET GRID */
+.widget-grid{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:16px;
+}
+
+/* WIDGETS */
+.widget{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;
+  position:relative;overflow:hidden;
+  transition:background 0.4s,border-color 0.4s,box-shadow 0.2s,transform 0.2s;
+  animation:widgetIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
+}
+.widget:hover{box-shadow:var(--shadow)}
+.widget.dragging{opacity:0.5;transform:scale(0.98);z-index:100;box-shadow:0 16px 48px rgba(0,0,0,0.5)}
+.widget.drag-over{border-color:var(--gold);background:rgba(201,168,76,0.04)}
+.widget.hidden-widget{display:none}
+
+@keyframes widgetIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* Grid spans */
+.span-4{grid-column:span 4}.span-3{grid-column:span 3}.span-6{grid-column:span 6}.span-8{grid-column:span 8}.span-12{grid-column:span 12}
+
+.widget-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.widget-title{font-size:12px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em}
+.widget-actions{display:flex;gap:4px}
+.widget-btn{width:26px;height:26px;border-radius:6px;background:transparent;border:none;cursor:pointer;color:var(--text3);font-size:12px;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.widget-btn:hover{background:var(--bg3);color:var(--text)}
+.drag-handle{cursor:grab;opacity:0;transition:opacity 0.15s}
+.widget:hover .drag-handle{opacity:1}
+.drag-handle:active{cursor:grabbing}
+
+/* Metric cards */
+.metric-val{font-family:var(--font-head);font-size:32px;font-weight:800;letter-spacing:-1px;line-height:1;margin-bottom:6px}
+.metric-sub{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:4px}
+.metric-up{color:var(--green3)}.metric-down{color:var(--red)}
+.metric-bar{height:3px;background:var(--border);border-radius:2px;margin-top:14px;overflow:hidden}
+.metric-fill{height:100%;border-radius:2px;transition:width 1.5s cubic-bezier(0.16,1,0.3,1)}
+
+/* Alert widget */
+.alert-list{display:flex;flex-direction:column;gap:8px}
+.alert-item{
+  display:flex;gap:10px;padding:10px 12px;
+  border-radius:8px;border:0.5px solid;
+  align-items:flex-start;cursor:pointer;transition:opacity 0.2s;
+}
+.alert-item:hover{opacity:0.85}
+.alert-item.critical{background:rgba(201,76,76,0.06);border-color:rgba(201,76,76,0.2)}
+.alert-item.warning{background:rgba(201,168,76,0.06);border-color:rgba(201,168,76,0.2)}
+.alert-item.info{background:rgba(46,173,84,0.06);border-color:rgba(46,173,84,0.2)}
+.alert-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.alert-item.critical .alert-dot{background:var(--red)}
+.alert-item.warning .alert-dot{background:var(--gold)}
+.alert-item.info .alert-dot{background:var(--green3)}
+.alert-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px}
+.alert-desc{font-size:12px;color:var(--text2);line-height:1.5}
+.alert-time{font-size:10px;color:var(--text3);margin-top:3px}
+
+/* Supplier scores */
+.sup-list{display:flex;flex-direction:column;gap:10px}
+.sup-row{display:flex;align-items:center;gap:12px}
+.sup-rank{font-size:12px;font-weight:600;color:var(--text3);min-width:18px;font-family:var(--font-head)}
+.sup-name-wrap{flex:1}
+.sup-name{font-size:13px;font-weight:500;color:var(--text)}
+.sup-detail{font-size:11px;color:var(--text3);margin-top:1px}
+.sup-bar-wrap{display:flex;align-items:center;gap:8px;min-width:120px}
+.sup-bar{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.sup-bar-fill{height:100%;border-radius:3px;transition:width 1.5s cubic-bezier(0.16,1,0.3,1)}
+.sup-score{font-family:var(--font-head);font-size:14px;font-weight:700;min-width:28px;text-align:right}
+
+/* Cash flow */
+.cf-bar-chart{display:flex;align-items:flex-end;gap:6px;height:80px;margin-top:8px}
+.cf-bar-group{flex:1;display:flex;gap:2px;align-items:flex-end}
+.cf-bar{flex:1;border-radius:3px 3px 0 0;min-height:4px;transition:height 1s cubic-bezier(0.16,1,0.3,1)}
+.cf-bar.in{background:var(--green3);opacity:0.8}
+.cf-bar.out{background:var(--red);opacity:0.7}
+.cf-labels{display:flex;gap:6px;margin-top:6px}
+.cf-label{flex:1;font-size:9px;color:var(--text3);text-align:center}
+.cf-legend{display:flex;gap:12px;margin-bottom:8px}
+.cf-leg{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3)}
+.cf-leg-dot{width:8px;height:8px;border-radius:2px}
+
+/* Sales list */
+.sale-list{display:flex;flex-direction:column;gap:6px}
+.sale-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:var(--bg3);transition:background 0.15s;cursor:pointer}
+.sale-row:hover{background:var(--bg4)}
+.sale-qr{width:28px;height:28px;border-radius:6px;background:var(--border2);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.sale-info{flex:1}
+.sale-name{font-size:13px;font-weight:500;color:var(--text)}
+.sale-items{font-size:11px;color:var(--text3);margin-top:1px}
+.sale-amount{font-family:var(--font-head);font-size:14px;font-weight:700;color:var(--green3)}
+.sale-time{font-size:10px;color:var(--text3)}
+
+/* Quick add */
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.quick-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;padding:16px 12px;
+  border-radius:10px;border:1px dashed var(--border2);
+  cursor:pointer;transition:all 0.2s;text-align:center;
+  background:transparent;color:var(--text2);
+}
+.quick-btn:hover{border-color:var(--gold);background:var(--gold3);color:var(--gold)}
+.quick-icon{font-size:20px}
+.quick-label{font-size:12px;font-weight:500}
+
+/* Margin donut area */
+.margin-overview{display:flex;gap:12px;margin-top:4px;flex-wrap:wrap}
+.margin-product{flex:1;min-width:120px;background:var(--bg3);border-radius:8px;padding:10px 12px;cursor:pointer;transition:background 0.15s}
+.margin-product:hover{background:var(--bg4)}
+.mp-name{font-size:12px;color:var(--text2);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-margin{font-family:var(--font-head);font-size:18px;font-weight:700;line-height:1}
+.mp-bar{height:3px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden}
+.mp-fill{height:100%;border-radius:2px}
+.mp-status{font-size:10px;margin-top:4px}
+
+/* Welcome banner */
+.welcome-banner{
+  grid-column:span 12;
+  background:linear-gradient(135deg,rgba(26,107,58,0.15) 0%,rgba(201,168,76,0.06) 100%);
+  border:1px solid rgba(201,168,76,0.15);
+  border-radius:var(--radius);padding:20px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  animation:widgetIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
+}
+.wb-text{}
+.wb-title{font-family:var(--font-head);font-size:18px;font-weight:700;letter-spacing:-0.3px;margin-bottom:4px}
+.wb-title span{color:var(--gold)}
+.wb-sub{font-size:13px;color:var(--text2);font-weight:300}
+.wb-actions{display:flex;gap:8px;flex-shrink:0}
+.wb-btn{padding:8px 16px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:var(--font-body)}
+.wb-btn.primary{background:var(--gold);color:#080C0A;border:none}
+.wb-btn.primary:hover{background:var(--gold2)}
+.wb-btn.ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.wb-btn.ghost:hover{border-color:var(--border);color:var(--text)}
+
+/* ── CUSTOMISE PANEL ── */
+.customize-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;
+  opacity:0;pointer-events:none;transition:opacity 0.3s;
+  backdrop-filter:blur(4px);
+}
+.customize-overlay.open{opacity:1;pointer-events:all}
+.customize-panel{
+  position:fixed;top:0;right:0;bottom:0;
+  width:340px;background:var(--bg2);border-left:1px solid var(--border);
+  z-index:201;padding:0;
+  transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.16,1,0.3,1),background 0.4s;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.customize-overlay.open .customize-panel{transform:translateX(0)}
+.cp-header{
+  padding:20px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.cp-title{font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--text)}
+.cp-close{width:30px;height:30px;border-radius:7px;background:var(--bg3);border:none;cursor:pointer;color:var(--text2);font-size:14px;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.cp-close:hover{background:var(--bg4);color:var(--text)}
+.cp-body{flex:1;overflow-y:auto;padding:20px 24px}
+.cp-body::-webkit-scrollbar{width:3px}
+.cp-body::-webkit-scrollbar-thumb{background:var(--border2)}
+.cp-section{margin-bottom:24px}
+.cp-section-title{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px}
+
+/* Theme swatches */
+.theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.theme-swatch{
+  border-radius:8px;padding:10px 8px;cursor:pointer;
+  border:1.5px solid var(--border);text-align:center;
+  transition:all 0.2s;
+}
+.theme-swatch:hover{border-color:var(--border2)}
+.theme-swatch.active{border-color:var(--gold)}
+.ts-preview{display:flex;gap:3px;justify-content:center;margin-bottom:6px}
+.ts-dot{width:12px;height:12px;border-radius:50%}
+.ts-name{font-size:10px;color:var(--text2)}
+
+/* Widget toggles */
+.widget-toggle-list{display:flex;flex-direction:column;gap:6px}
+.widget-toggle{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:var(--bg3);border-radius:8px;cursor:pointer;
+}
+.wt-icon{font-size:14px;min-width:20px;text-align:center}
+.wt-name{flex:1;font-size:13px;color:var(--text2)}
+.toggle{width:36px;height:20px;border-radius:100px;background:var(--border2);position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0}
+.toggle.on{background:var(--green3)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform 0.2s}
+.toggle.on::after{transform:translateX(16px)}
+
+/* Layout options */
+.layout-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.layout-opt{border:1.5px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;transition:all 0.2s;text-align:center}
+.layout-opt:hover{border-color:var(--border2)}
+.layout-opt.active{border-color:var(--gold);background:rgba(201,168,76,0.05)}
+.lo-preview{display:grid;gap:2px;margin-bottom:6px;height:32px}
+.lo-block{background:var(--border2);border-radius:2px}
+.lo-name{font-size:10px;color:var(--text2)}
+
+/* Font picker */
+.font-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.font-opt{border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;cursor:pointer;transition:all 0.2s}
+.font-opt:hover{border-color:var(--border2)}
+.font-opt.active{border-color:var(--gold)}
+.fo-sample{font-size:16px;font-weight:700;color:var(--text);margin-bottom:2px}
+.fo-name{font-size:10px;color:var(--text3)}
+
+.cp-footer{
+  padding:16px 24px;border-top:1px solid var(--border);flex-shrink:0;
+  display:flex;gap:8px;
+}
+.cp-btn{flex:1;padding:10px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:var(--font-body)}
+.cp-btn.primary{background:var(--gold);color:#080C0A;border:none}
+.cp-btn.primary:hover{background:var(--gold2)}
+.cp-btn.ghost{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.cp-btn.ghost:hover{border-color:var(--border);color:var(--text)}
+
+/* Notification panel */
+.notif-panel{
+  position:fixed;top:60px;right:16px;width:320px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  z-index:150;box-shadow:var(--shadow);
+  opacity:0;pointer-events:none;transform:translateY(-8px);
+  transition:all 0.2s;
+}
+.notif-panel.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.np-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.np-title{font-size:13px;font-weight:600;color:var(--text)}
+.np-clear{font-size:11px;color:var(--gold);cursor:pointer}
+.np-list{max-height:300px;overflow-y:auto}
+.np-item{display:flex;gap:10px;padding:12px 16px;border-bottom:0.5px solid var(--border);cursor:pointer;transition:background 0.15s}
+.np-item:hover{background:var(--bg3)}
+.np-item:last-child{border-bottom:none}
+.np-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.np-text{font-size:12px;color:var(--text2);line-height:1.5;flex:1}
+.np-time{font-size:10px;color:var(--text3);margin-top:3px}
+
+/* Scrollbar for content */
+@keyframes widgetIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+@media(max-width:900px){
+  .sidebar{display:none}
+  .span-4,.span-3{grid-column:span 6}
+  .span-8{grid-column:span 12}
+}
+@media(max-width:600px){
+  .span-4,.span-3,.span-6{grid-column:span 12}
+  .content{padding:16px}
+  .topbar{padding:0 16px}
+}
+</style>
+</head>
+<body class="theme-forest">
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-collapse-btn" id="collapseBtn" onclick="toggleSidebar()">◀</div>
+
+  <div class="sb-logo">
+    <div class="sb-logo-mark">S</div>
+    <div class="sb-logo-text">Skorr<span>.</span></div>
+  </div>
+
+  <div class="sb-section">Main</div>
+  <a class="sb-item active" onclick="setActive(this)">
+    <span class="sb-icon">⊞</span>
+    <span class="sb-label">Dashboard</span>
+  </a>
+  <a class="sb-item" onclick="setActive(this)">
+    <span class="sb-icon">📦</span>
+    <span class="sb-label">Products</span>
+  </a>
+  <a class="sb-item" onclick="setActive(this)">
+    <span class="sb-icon">📱</span>
+    <span class="sb-label">QR Billing</span>
+  </a>
+  <a class="sb-item" onclick="setActive(this)">
+    <span class="sb-icon">🤝</span>
+    <span class="sb-label">Suppliers</span>
+  </a>
+
+  <div class="sb-section">Finance</div>
+  <a class="sb-item" onclick="setActive(this)">
+    <span class="sb-icon">💸</span>
+    <span class="sb-label">Cash Flow</span>
+  </a>
+  <a class="sb-item" onclick="setActive(this)">
+    <span class="sb-icon">📋</span>
+    <span class="sb-label">Purchase Orders</span>
+  </a>
+  <a class="sb-item" onclick="setActive(this)">
+    <span class="sb-icon">🧮</span>
+    <span class="sb-label">Deal Simulator</span>
+  </a>
+
+  <div class="sb-section">Intelligence</div>
+  <a class="sb-item" onclick="setActive(this)">
+    <span class="sb-icon">🏆</span>
+    <span class="sb-label">Supplier Scores</span>
+  </a>
+  <a class="sb-item" onclick="setActive(this)">
+    <span class="sb-icon">🤖</span>
+    <span class="sb-label">Skorr Advisor</span>
+    <span class="sb-badge">New</span>
+  </a>
+  <a class="sb-item" onclick="setActive(this)">
+    <span class="sb-icon">📈</span>
+    <span class="sb-label">Reports</span>
+  </a>
+
+  <div class="sb-spacer"></div>
+
+  <a class="sb-item" onclick="setActive(this)">
+    <span class="sb-icon">⚙️</span>
+    <span class="sb-label">Settings</span>
+  </a>
+
+  <div class="sb-user">
+    <div class="sb-avatar">RG</div>
+    <div class="sb-user-info">
+      <div class="sb-user-name">Rakesh Gupta</div>
+      <div class="sb-user-plan">Growth Plan ✦</div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-greeting">
+      <div class="topbar-title" id="greeting">Good morning, Rakesh 👋</div>
+      <div class="topbar-date" id="dateStr"></div>
+    </div>
+    <div class="topbar-actions">
+      <div class="topbar-search">🔍 <span>Search anything...</span><span style="color:var(--text4);margin-left:8px;font-size:11px">⌘K</span></div>
+      <div class="topbar-btn" onclick="toggleNotif()" title="Alerts">
+        🔔
+        <div class="notif-dot"></div>
+      </div>
+      <div class="topbar-btn" title="WhatsApp alerts">📱</div>
+      <div class="customize-btn" onclick="openCustomize()">✦ Customise</div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATION PANEL -->
+  <div class="notif-panel" id="notifPanel">
+    <div class="np-header">
+      <div class="np-title">Alerts & Notifications</div>
+      <div class="np-clear" onclick="clearNotifs()">Clear all</div>
+    </div>
+    <div class="np-list">
+      <div class="np-item"><div class="np-dot" style="background:var(--red)"></div><div><div class="np-text"><strong>Margin drop:</strong> Clinic Plus 200ml fell from 33% → 14.6%. Cost price may have changed.</div><div class="np-time">12:04 AM · WhatsApp sent ✓</div></div></div>
+      <div class="np-item"><div class="np-dot" style="background:var(--gold)"></div><div><div class="np-text"><strong>Cash warning:</strong> Projected ₹17,000 shortfall on 15th March. Follow up on Mehta Cloth payment.</div><div class="np-time">Yesterday · 8:00 AM</div></div></div>
+      <div class="np-item"><div class="np-dot" style="background:var(--green3)"></div><div><div class="np-text"><strong>Supplier score ready:</strong> Gupta Distributors scored 84/100. Your best performer.</div><div class="np-time">2 days ago</div></div></div>
+      <div class="np-item"><div class="np-dot" style="background:var(--gold)"></div><div><div class="np-text"><strong>Low stock:</strong> Colgate 150g has only 4 units left. Below your alert threshold of 10.</div><div class="np-time">3 days ago</div></div></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD CONTENT -->
+  <div class="content" id="content">
+    <div class="widget-grid" id="widgetGrid">
+
+      <!-- Welcome banner -->
+      <div class="welcome-banner" id="w-welcome" style="animation-delay:0s">
+        <div class="wb-text">
+          <div class="wb-title">Your shop is doing well, <span>Rakesh.</span> 📈</div>
+          <div class="wb-sub">Margins are stable. 1 alert needs attention. Supplier scores updated 2 days ago.</div>
+        </div>
+        <div class="wb-actions">
+          <button class="wb-btn ghost" onclick="document.getElementById('w-welcome').style.display='none'">Dismiss</button>
+          <button class="wb-btn primary">View alerts →</button>
+        </div>
+      </div>
+
+      <!-- Margin health -->
+      <div class="widget span-8" id="w-margin" draggable="true" style="animation-delay:0.05s">
+        <div class="widget-header">
+          <div class="widget-title">Margin health overview</div>
+          <div class="widget-actions">
+            <div class="widget-btn drag-handle" title="Drag to reorder">⠿</div>
+            <div class="widget-btn" title="View all">↗</div>
+          </div>
+        </div>
+        <div class="margin-overview">
+          <div class="margin-product">
+            <div class="mp-name">Clinic Plus 200ml</div>
+            <div class="mp-margin" style="color:var(--red)">14.6%</div>
+            <div class="mp-bar"><div class="mp-fill" style="width:14.6%;background:var(--red)"></div></div>
+            <div class="mp-status" style="color:var(--red)">⚠ Below threshold</div>
+          </div>
+          <div class="margin-product">
+            <div class="mp-name">Colgate 150g</div>
+            <div class="mp-margin" style="color:var(--green3)">31%</div>
+            <div class="mp-bar"><div class="mp-fill" style="width:31%;background:var(--green3)"></div></div>
+            <div class="mp-status" style="color:var(--green3)">✓ Healthy</div>
+          </div>
+          <div class="margin-product">
+            <div class="mp-name">Surf Excel 1kg</div>
+            <div class="mp-margin" style="color:var(--green3)">28%</div>
+            <div class="mp-bar"><div class="mp-fill" style="width:28%;background:var(--green3)"></div></div>
+            <div class="mp-status" style="color:var(--green3)">✓ Healthy</div>
+          </div>
+          <div class="margin-product">
+            <div class="mp-name">Parle-G 400g</div>
+            <div class="mp-margin" style="color:var(--gold)">9%</div>
+            <div class="mp-bar"><div class="mp-fill" style="width:9%;background:var(--gold)"></div></div>
+            <div class="mp-status" style="color:var(--gold)">⚡ Low margin</div>
+          </div>
+          <div class="margin-product">
+            <div class="mp-name">Lays Classic 26g</div>
+            <div class="mp-margin" style="color:var(--green3)">40%</div>
+            <div class="mp-bar"><div class="mp-fill" style="width:40%;background:var(--green3)"></div></div>
+            <div class="mp-status" style="color:var(--green3)">✓ Healthy</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerts -->
+      <div class="widget span-4" id="w-alerts" draggable="true" style="animation-delay:0.1s">
+        <div class="widget-header">
+          <div class="widget-title">Active alerts</div>
+          <div class="widget-actions">
+            <div class="widget-btn drag-handle">⠿</div>
+            <div class="widget-btn">↗</div>
+          </div>
+        </div>
+        <div class="alert-list">
+          <div class="alert-item critical">
+            <div class="alert-dot"></div>
+            <div>
+              <div class="alert-title">Margin drop — Clinic Plus</div>
+              <div class="alert-desc">33% → 14.6% — below 25% threshold</div>
+              <div class="alert-time">Tonight 12:04 AM</div>
+            </div>
+          </div>
+          <div class="alert-item warning">
+            <div class="alert-dot"></div>
+            <div>
+              <div class="alert-title">Cash gap — 18 days</div>
+              <div class="alert-desc">₹17,000 shortfall projected on Mar 15</div>
+              <div class="alert-time">Yesterday</div>
+            </div>
+          </div>
+          <div class="alert-item warning">
+            <div class="alert-dot"></div>
+            <div>
+              <div class="alert-title">Low stock — Colgate 150g</div>
+              <div class="alert-desc">Only 4 units left · Threshold: 10</div>
+              <div class="alert-time">3 days ago</div>
+            </div>
+          </div>
+          <div class="alert-item info">
+            <div class="alert-dot"></div>
+            <div>
+              <div class="alert-title">Supplier score updated</div>
+              <div class="alert-desc">Gupta Distributors: 84/100 ★</div>
+              <div class="alert-time">2 days ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Net margin metric -->
+      <div class="widget span-3" id="w-netmargin" draggable="true" style="animation-delay:0.12s">
+        <div class="widget-header">
+          <div class="widget-title">Net margin</div>
+          <div class="widget-actions"><div class="widget-btn drag-handle">⠿</div></div>
+        </div>
+        <div class="metric-val" style="color:var(--green3)">31.4%</div>
+        <div class="metric-sub"><span class="metric-up">↑ 2.1%</span> vs last month</div>
+        <div class="metric-bar"><div class="metric-fill" style="width:31.4%;background:var(--green3)"></div></div>
+      </div>
+
+      <!-- Cash position -->
+      <div class="widget span-3" id="w-cash" draggable="true" style="animation-delay:0.15s">
+        <div class="widget-header">
+          <div class="widget-title">Cash on hand</div>
+          <div class="widget-actions"><div class="widget-btn drag-handle">⠿</div></div>
+        </div>
+        <div class="metric-val" style="color:var(--text)">₹28,400</div>
+        <div class="metric-sub"><span class="metric-down">⚠ Gap in 18 days</span></div>
+        <div class="metric-bar"><div class="metric-fill" style="width:45%;background:var(--gold)"></div></div>
+      </div>
+
+      <!-- Today's sales -->
+      <div class="widget span-3" id="w-todaysales" draggable="true" style="animation-delay:0.18s">
+        <div class="widget-header">
+          <div class="widget-title">Today's sales</div>
+          <div class="widget-actions"><div class="widget-btn drag-handle">⠿</div></div>
+        </div>
+        <div class="metric-val" style="color:var(--gold)">₹4,280</div>
+        <div class="metric-sub"><span class="metric-up">↑ 12%</span> vs yesterday</div>
+        <div class="metric-bar"><div class="metric-fill" style="width:68%;background:var(--gold)"></div></div>
+      </div>
+
+      <!-- Total profit -->
+      <div class="widget span-3" id="w-profit" draggable="true" style="animation-delay:0.2s">
+        <div class="widget-header">
+          <div class="widget-title">Month profit</div>
+          <div class="widget-actions"><div class="widget-btn drag-handle">⠿</div></div>
+        </div>
+        <div class="metric-val" style="color:var(--green3)">₹14,820</div>
+        <div class="metric-sub"><span class="metric-up">↑ 8.4%</span> vs last month</div>
+        <div class="metric-bar"><div class="metric-fill" style="width:58%;background:var(--green3)"></div></div>
+      </div>
+
+      <!-- Cash flow chart -->
+      <div class="widget span-6" id="w-cashflow" draggable="true" style="animation-delay:0.22s">
+        <div class="widget-header">
+          <div class="widget-title">Cash flow — last 7 days</div>
+          <div class="widget-actions">
+            <div class="widget-btn drag-handle">⠿</div>
+            <div class="widget-btn">↗</div>
+          </div>
+        </div>
+        <div class="cf-legend">
+          <div class="cf-leg"><div class="cf-leg-dot" style="background:var(--green3)"></div>Inflow</div>
+          <div class="cf-leg"><div class="cf-leg-dot" style="background:var(--red)"></div>Outflow</div>
+        </div>
+        <div class="cf-bar-chart" id="cfChart"></div>
+        <div class="cf-labels" id="cfLabels"></div>
+      </div>
+
+      <!-- Supplier scores -->
+      <div class="widget span-6" id="w-suppliers" draggable="true" style="animation-delay:0.25s">
+        <div class="widget-header">
+          <div class="widget-title">Supplier true profit score</div>
+          <div class="widget-actions">
+            <div class="widget-btn drag-handle">⠿</div>
+            <div class="widget-btn">↗</div>
+          </div>
+        </div>
+        <div class="sup-list">
+          <div class="sup-row">
+            <div class="sup-rank">#1</div>
+            <div class="sup-name-wrap"><div class="sup-name">Gupta Distributors</div><div class="sup-detail">2% returns · 30-day credit</div></div>
+            <div class="sup-bar-wrap"><div class="sup-bar"><div class="sup-bar-fill" style="width:84%;background:#2EAD54"></div></div><div class="sup-score" style="color:#2EAD54">84</div></div>
+          </div>
+          <div class="sup-row">
+            <div class="sup-rank">#2</div>
+            <div class="sup-name-wrap"><div class="sup-name">Verma & Sons</div><div class="sup-detail">5% returns · 15-day credit</div></div>
+            <div class="sup-bar-wrap"><div class="sup-bar"><div class="sup-bar-fill" style="width:67%;background:#C9A84C"></div></div><div class="sup-score" style="color:#C9A84C">67</div></div>
+          </div>
+          <div class="sup-row">
+            <div class="sup-rank">#3</div>
+            <div class="sup-name-wrap"><div class="sup-name">Patel Wholesale</div><div class="sup-detail">9% returns · cash only</div></div>
+            <div class="sup-bar-wrap"><div class="sup-bar"><div class="sup-bar-fill" style="width:52%;background:#C9A84C"></div></div><div class="sup-score" style="color:#C9A84C">52</div></div>
+          </div>
+          <div class="sup-row">
+            <div class="sup-rank">#4</div>
+            <div class="sup-name-wrap"><div class="sup-name">Sharma Traders</div><div class="sup-detail">22% returns · loss: ₹6,400</div></div>
+            <div class="sup-bar-wrap"><div class="sup-bar"><div class="sup-bar-fill" style="width:34%;background:#C94C4C"></div></div><div class="sup-score" style="color:#C94C4C">34</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent sales -->
+      <div class="widget span-6" id="w-sales" draggable="true" style="animation-delay:0.28s">
+        <div class="widget-header">
+          <div class="widget-title">Recent QR sales</div>
+          <div class="widget-actions">
+            <div class="widget-btn drag-handle">⠿</div>
+            <div class="widget-btn">↗</div>
+          </div>
+        </div>
+        <div class="sale-list">
+          <div class="sale-row"><div class="sale-qr">📱</div><div class="sale-info"><div class="sale-name">Ramesh Kumar</div><div class="sale-items">Lays ×1 · Colgate ×1 · Phynol ×1</div></div><div><div class="sale-amount">₹140</div><div class="sale-time">2 min ago</div></div></div>
+          <div class="sale-row"><div class="sale-qr">📱</div><div class="sale-info"><div class="sale-name">Walk-in customer</div><div class="sale-items">Surf Excel 1kg ×2</div></div><div><div class="sale-amount">₹260</div><div class="sale-time">18 min ago</div></div></div>
+          <div class="sale-row"><div class="sale-qr">📱</div><div class="sale-info"><div class="sale-name">Sunita Devi</div><div class="sale-items">Parle-G ×3 · Lays ×2 · Colgate ×1</div></div><div><div class="sale-amount">₹195</div><div class="sale-time">45 min ago</div></div></div>
+          <div class="sale-row"><div class="sale-qr">📱</div><div class="sale-info"><div class="sale-name">Walk-in customer</div><div class="sale-items">Clinic Plus ×1</div></div><div><div class="sale-amount">₹150</div><div class="sale-time">1 hr ago</div></div></div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="widget span-6" id="w-quickadd" draggable="true" style="animation-delay:0.3s">
+        <div class="widget-header">
+          <div class="widget-title">Quick actions</div>
+          <div class="widget-actions"><div class="widget-btn drag-handle">⠿</div></div>
+        </div>
+        <div class="quick-grid">
+          <div class="quick-btn"><div class="quick-icon">📦</div><div class="quick-label">Add product</div></div>
+          <div class="quick-btn"><div class="quick-icon">📱</div><div class="quick-label">New QR sale</div></div>
+          <div class="quick-btn"><div class="quick-icon">🤝</div><div class="quick-label">Add supplier</div></div>
+          <div class="quick-btn"><div class="quick-icon">📋</div><div class="quick-label">Purchase order</div></div>
+          <div class="quick-btn"><div class="quick-icon">🧮</div><div class="quick-label">Deal simulator</div></div>
+          <div class="quick-btn"><div class="quick-icon">🤖</div><div class="quick-label">Ask Advisor</div></div>
+        </div>
+      </div>
+
+    </div><!-- /widget-grid -->
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- CUSTOMISE OVERLAY -->
+<div class="customize-overlay" id="customizeOverlay" onclick="closeCustomizeOnOverlay(event)">
+  <div class="customize-panel" id="customizePanel">
+
+    <div class="cp-header">
+      <div class="cp-title">✦ Customise dashboard</div>
+      <button class="cp-close" onclick="closeCustomize()">✕</button>
+    </div>
+
+    <div class="cp-body">
+
+      <!-- Theme -->
+      <div class="cp-section">
+        <div class="cp-section-title">Theme & colour</div>
+        <div class="theme-grid">
+          <div class="theme-swatch active" onclick="setTheme('forest',this)">
+            <div class="ts-preview"><div class="ts-dot" style="background:#080C0A"></div><div class="ts-dot" style="background:#2EAD54"></div><div class="ts-dot" style="background:#C9A84C"></div></div>
+            <div class="ts-name">Forest</div>
+          </div>
+          <div class="theme-swatch" onclick="setTheme('ocean',this)">
+            <div class="ts-preview"><div class="ts-dot" style="background:#080C10"></div><div class="ts-dot" style="background:#4C9AC9"></div><div class="ts-dot" style="background:#4CA8C9"></div></div>
+            <div class="ts-name">Ocean</div>
+          </div>
+          <div class="theme-swatch" onclick="setTheme('sunset',this)">
+            <div class="ts-preview"><div class="ts-dot" style="background:#0C0806"></div><div class="ts-dot" style="background:#C9A84C"></div><div class="ts-dot" style="background:#C9704C"></div></div>
+            <div class="ts-name">Sunset</div>
+          </div>
+          <div class="theme-swatch" onclick="setTheme('lavender',this)">
+            <div class="ts-preview"><div class="ts-dot" style="background:#09080C"></div><div class="ts-dot" style="background:#7E9AC9"></div><div class="ts-dot" style="background:#9A7EC9"></div></div>
+            <div class="ts-name">Lavender</div>
+          </div>
+          <div class="theme-swatch" onclick="setTheme('light',this)">
+            <div class="ts-preview"><div class="ts-dot" style="background:#F5F2EC"></div><div class="ts-dot" style="background:#1A8A3A"></div><div class="ts-dot" style="background:#B8942A"></div></div>
+            <div class="ts-name">Light</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layout -->
+      <div class="cp-section">
+        <div class="cp-section-title">Layout density</div>
+        <div class="layout-grid">
+          <div class="layout-opt active" onclick="setLayout('comfortable',this)">
+            <div class="lo-preview" style="grid-template-rows:1fr 1fr;gap:3px"><div class="lo-block"></div><div class="lo-block"></div></div>
+            <div class="lo-name">Comfortable</div>
+          </div>
+          <div class="layout-opt" onclick="setLayout('compact',this)">
+            <div class="lo-preview" style="grid-template-rows:repeat(3,1fr);gap:2px"><div class="lo-block"></div><div class="lo-block"></div><div class="lo-block"></div></div>
+            <div class="lo-name">Compact</div>
+          </div>
+          <div class="layout-opt" onclick="setLayout('spacious',this)">
+            <div class="lo-preview" style="grid-template-rows:1fr;gap:2px"><div class="lo-block"></div></div>
+            <div class="lo-name">Spacious</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Widget visibility -->
+      <div class="cp-section">
+        <div class="cp-section-title">Widgets — show / hide</div>
+        <div class="widget-toggle-list" id="widgetToggles"></div>
+      </div>
+
+      <!-- Shop name -->
+      <div class="cp-section">
+        <div class="cp-section-title">Your name on dashboard</div>
+        <input type="text" id="customName" value="Rakesh" placeholder="Your name"
+          style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;font-size:14px;color:var(--text);font-family:var(--font-body);outline:none"
+          oninput="updateGreeting()"/>
+      </div>
+
+    </div>
+
+    <div class="cp-footer">
+      <button class="cp-btn ghost" onclick="resetLayout()">Reset</button>
+      <button class="cp-btn primary" onclick="closeCustomize()">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Cursor ──
+const cursor=document.getElementById('cursor');
+const ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+});
+(function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)})();
+document.querySelectorAll('a,button,.sb-item,.quick-btn,.sale-row,.alert-item,.theme-swatch,.layout-opt,.widget-toggle,.topbar-btn,.customize-btn').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.style.width='40px';ring.style.height='40px'});
+  el.addEventListener('mouseleave',()=>{ring.style.width='28px';ring.style.height='28px'});
+});
+
+// ── Greeting ──
+function updateGreeting(){
+  const name=document.getElementById('customName').value||'there';
+  const h=new Date().getHours();
+  const g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  document.getElementById('greeting').textContent=`${g}, ${name} 👋`;
+}
+function setDate(){
+  const d=new Date();
+  document.getElementById('dateStr').textContent=d.toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+}
+setDate();updateGreeting();
+
+// ── Sidebar ──
+let sidebarCollapsed=false;
+function toggleSidebar(){
+  sidebarCollapsed=!sidebarCollapsed;
+  document.getElementById('sidebar').classList.toggle('collapsed',sidebarCollapsed);
+  document.getElementById('collapseBtn').textContent=sidebarCollapsed?'▶':'◀';
+}
+function setActive(el){
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── Notifications ──
+let notifOpen=false;
+function toggleNotif(){
+  notifOpen=!notifOpen;
+  document.getElementById('notifPanel').classList.toggle('open',notifOpen);
+}
+function clearNotifs(){
+  document.getElementById('notifPanel').querySelector('.np-list').innerHTML='<div style="padding:20px;text-align:center;font-size:13px;color:var(--text3)">All caught up ✓</div>';
+  document.querySelector('.notif-dot').style.display='none';
+}
+document.addEventListener('click',e=>{
+  if(notifOpen&&!e.target.closest('#notifPanel')&&!e.target.closest('.topbar-btn'))toggleNotif();
+});
+
+// ── Cash flow chart ──
+const cfData=[
+  {day:'Mon',in:4200,out:3100},{day:'Tue',in:5800,out:2400},
+  {day:'Wed',in:3100,out:4200},{day:'Thu',in:6200,out:1800},
+  {day:'Fri',in:4800,out:3600},{day:'Sat',in:7200,out:2200},
+  {day:'Sun',in:4280,out:1900},
+];
+const maxVal=Math.max(...cfData.map(d=>Math.max(d.in,d.out)));
+const chart=document.getElementById('cfChart');
+const labels=document.getElementById('cfLabels');
+cfData.forEach(d=>{
+  const g=document.createElement('div');g.className='cf-bar-group';
+  const bi=document.createElement('div');bi.className='cf-bar in';bi.style.height=`${(d.in/maxVal)*100}%`;
+  const bo=document.createElement('div');bo.className='cf-bar out';bo.style.height=`${(d.out/maxVal)*100}%`;
+  g.append(bi,bo);chart.appendChild(g);
+  const l=document.createElement('div');l.className='cf-label';l.textContent=d.day;labels.appendChild(l);
+});
+
+// ── Widget config ──
+const widgets=[
+  {id:'w-welcome',icon:'🌅',name:'Welcome banner'},
+  {id:'w-margin',icon:'📉',name:'Margin health'},
+  {id:'w-alerts',icon:'🔔',name:'Active alerts'},
+  {id:'w-netmargin',icon:'📊',name:'Net margin metric'},
+  {id:'w-cash',icon:'💵',name:'Cash on hand'},
+  {id:'w-todaysales',icon:'🛒',name:'Today\'s sales'},
+  {id:'w-profit',icon:'📈',name:'Month profit'},
+  {id:'w-cashflow',icon:'💸',name:'Cash flow chart'},
+  {id:'w-suppliers',icon:'🏆',name:'Supplier scores'},
+  {id:'w-sales',icon:'📱',name:'Recent QR sales'},
+  {id:'w-quickadd',icon:'⚡',name:'Quick actions'},
+];
+const widgetState={};
+widgets.forEach(w=>widgetState[w.id]=true);
+
+function buildToggles(){
+  const list=document.getElementById('widgetToggles');
+  list.innerHTML='';
+  widgets.forEach(w=>{
+    const row=document.createElement('div');row.className='widget-toggle';
+    row.innerHTML=`<span class="wt-icon">${w.icon}</span><span class="wt-name">${w.name}</span><div class="toggle ${widgetState[w.id]?'on':''}" onclick="toggleWidget('${w.id}',this)"></div>`;
+    list.appendChild(row);
+  });
+}
+function toggleWidget(id,toggle){
+  widgetState[id]=!widgetState[id];
+  toggle.classList.toggle('on',widgetState[id]);
+  const el=document.getElementById(id);
+  if(el)el.classList.toggle('hidden-widget',!widgetState[id]);
+}
+buildToggles();
+
+// ── Customize panel ──
+function openCustomize(){
+  document.getElementById('customizeOverlay').classList.add('open');
+  buildToggles();
+}
+function closeCustomize(){document.getElementById('customizeOverlay').classList.remove('open')}
+function closeCustomizeOnOverlay(e){if(e.target===document.getElementById('customizeOverlay'))closeCustomize()}
+
+// ── Themes ──
+function setTheme(theme,el){
+  document.body.className='theme-'+theme;
+  document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── Layout ──
+function setLayout(type,el){
+  document.querySelectorAll('.layout-opt').forEach(o=>o.classList.remove('active'));
+  el.classList.add('active');
+  const grid=document.getElementById('widgetGrid');
+  if(type==='compact')grid.style.gap='8px';
+  else if(type==='spacious')grid.style.gap='24px';
+  else grid.style.gap='16px';
+}
+
+// ── Reset ──
+function resetLayout(){
+  widgets.forEach(w=>{widgetState[w.id]=true;const el=document.getElementById(w.id);if(el)el.classList.remove('hidden-widget')});
+  setTheme('forest',document.querySelector('.theme-swatch'));
+  document.getElementById('widgetGrid').style.gap='16px';
+  buildToggles();
+}
+
+// ── Drag & drop ──
+let dragSrc=null;
+document.querySelectorAll('.widget[draggable]').forEach(w=>{
+  w.addEventListener('dragstart',e=>{dragSrc=w;w.classList.add('dragging');e.dataTransfer.effectAllowed='move'});
+  w.addEventListener('dragend',()=>{dragSrc=null;document.querySelectorAll('.widget').forEach(x=>x.classList.remove('dragging','drag-over'))});
+  w.addEventListener('dragover',e=>{e.preventDefault();if(dragSrc&&w!==dragSrc)w.classList.add('drag-over')});
+  w.addEventListener('dragleave',()=>w.classList.remove('drag-over'));
+  w.addEventListener('drop',e=>{
+    e.preventDefault();w.classList.remove('drag-over');
+    if(!dragSrc||dragSrc===w)return;
+    const grid=document.getElementById('widgetGrid');
+    const nodes=[...grid.children];
+    const si=nodes.indexOf(dragSrc),ti=nodes.indexOf(w);
+    if(si<ti)grid.insertBefore(dragSrc,w.nextSibling);
+    else grid.insertBefore(dragSrc,w);
+  });
+});
+
+// ── Animate sup bars on load ──
+setTimeout(()=>{
+  document.querySelectorAll('.sup-bar-fill,.metric-fill').forEach(b=>{
+    const w=b.style.width;b.style.width='0';
+    setTimeout(()=>b.style.width=w,100);
+  });
+},400);
+</script>
+</body>
+</html>
