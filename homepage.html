@@ -828,13 +828,12 @@ const cObs=new IntersectionObserver(entries=>{
 },{threshold:0.5});
 document.querySelectorAll('[data-count]').forEach(el=>cObs.observe(el));
 
-// WA float notification
 setTimeout(()=>{
   document.getElementById('waFloat').classList.add('show');
   setTimeout(()=>document.getElementById('waFloat').classList.remove('show'),5000);
 },3500);
 
-// Supplier bar animation on scroll
+
 const barObs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(e.isIntersecting){

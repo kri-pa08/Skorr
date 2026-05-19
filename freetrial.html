@@ -587,7 +587,7 @@ input.error + .field-error{display:block}
         <div class="success-item">Your data is encrypted and private</div>
         <div class="success-item">Cancel anytime from your settings</div>
       </div>
-      <a href="#" class="btn-dashboard">Go to your dashboard →</a>
+      <a href="dashboard.html" class="btn-dashboard">Go to your dashboard →</a>
     </div>
 
   </div>
@@ -695,21 +695,63 @@ function checkPassword(el){
 }
 
 // Submit
-function handleSubmit(){
+// Submit — Backend se connected
+async function handleSubmit(){
   if(!validateStep(3))return;
   const btn=document.getElementById('submitBtn');
   const txt=document.getElementById('submitText');
   btn.disabled=true;
-  txt.textContent='Setting up your account...';
-  setTimeout(()=>{
+  txt.textContent='Creating your shop';
+  const payload={
+    firstName: document.getElementById('firstName').value.trim(),
+    lastName:  document.getElementById('lastName').value.trim(),
+    email:     document.getElementById('email').value.trim(),
+    phone:     document.getElementById('phone').value.trim(),
+    password:  document.getElementById('password').value,
+    shopName:  document.getElementById('shopName').value.trim(),
+    city:      document.getElementById('city').value.trim(),
+    shopType:  document.getElementById('shopType').value,
+    plan:      document.querySelector('input[name="plan"]:checked')?.value||'starter'
+  };
+  try{
+    const response=await fetch('http://localhost:3001/api/auth/signup',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const data=await response.json();
+    if(!response.ok){
+      btn.disabled=false;
+      txt.textContent='Start 14-day free trial →';
+      showFormError(data.error||'Error, Try again');
+      return;
+    }
+    localStorage.setItem('skorr_token',data.token);
+    localStorage.setItem('skorr_user',JSON.stringify(data.user));
     document.getElementById('formBody').style.display='none';
     document.getElementById('stepsWrap').style.display='none';
     document.querySelector('.form-header').style.display='none';
-    const sw=document.getElementById('successWrap');
-    sw.classList.add('show');
-    const name=document.getElementById('firstName').value||'there';
-    document.getElementById('successName').textContent=name;
-  },1800);
+    document.getElementById('successWrap').classList.add('show');
+    document.getElementById('successName').textContent=data.user.name.split(' ')[0];
+    setTimeout(()=>{window.location.href='skorr-dashboard.html';},2000);
+  }catch(err){
+    btn.disabled=false;
+    txt.textContent='Start 14-day free trial →';
+    showFormError('Backend se connect nahi ho pa raha. Terminal mein node index.js chal raha hai?');
+  }
+}
+
+// Error dikhane ke liye
+function showFormError(msg){
+  const old=document.getElementById('formError');
+  if(old)old.remove();
+  const div=document.createElement('div');
+  div.id='formError';
+  div.style.cssText='background:rgba(201,76,76,0.1);border:1px solid rgba(201,76,76,0.3);border-radius:8px;padding:12px 16px;font-size:13px;color:#C94C4C;margin-bottom:8px;text-align:center;';
+  div.textContent='⚠️ '+msg;
+  const btnRow=document.querySelector('#step3 .btn-row');
+  btnRow.parentNode.insertBefore(div,btnRow);
+  setTimeout(()=>div.remove(),5000);
 }
 
 // Google

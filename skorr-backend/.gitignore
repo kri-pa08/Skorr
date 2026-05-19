@@ -1,0 +1,15 @@
+# Environment variables — Never add this on github
+.env
+backend/.env
+
+# Node modules — this is used to be very big so its not important
+node_modules/
+backend/node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
