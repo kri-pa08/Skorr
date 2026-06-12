@@ -51,7 +51,7 @@ app.post('/api/auth/signup', async (req, res) => {
   try {
     const { firstName, lastName, email, phone, password, shopName, city, shopType } = req.body
 
-    // ── Validation ──────────────────────────────────────────
+    // ── Validation ────────────────────────
     if (!firstName || !email || !phone || !password || !shopName) {
       return res.status(400).json({
         error: 'Fill every important field — name, email, phone, password, shop name'
